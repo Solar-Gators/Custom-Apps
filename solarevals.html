@@ -574,7 +574,9 @@ async function syncNow({quiet=false} = {}){
     const pending = !same(merged, remote.db) && !conn.token;
     setSync(conn.token ? "ok" : "readonly", pending ? "Some versions here aren't shared yet: add a token to upload them." : "");
   } catch (e) {
-    setSync("error", e.status === 401 ? "GitHub didn't accept the token. It may have expired." : (e.message || String(e)));
+    setSync("error", e.status === 401 ? "GitHub didn't accept the token. It may have expired."
+      : e.status === 403 && /rate limit/i.test(e.message) ? "GitHub's hourly limit for viewers without a token was reached. Try again later, or add a token."
+      : (e.message || String(e)));
   } finally { syncing = false; }
 }
 /* Save the local db to GitHub (after adding a version). Retries if a teammate saved at the same moment. */
@@ -598,8 +600,16 @@ async function commit(message){
     }
   }
 }
-setInterval(() => { if (sharing() && document.visibilityState === "visible") syncNow({quiet:true}); }, 45000);
-document.addEventListener("visibilitychange", () => { if (sharing() && document.visibilityState === "visible") syncNow({quiet:true}); });
+/* Check for teammates' saves. Without a token GitHub allows only 60 requests an hour,
+   so viewers check every 3 minutes; with one, every minute. Nothing to find = stop asking. */
+let lastCheck = Date.now();
+function checkSoon(){
+  if (!sharing() || document.visibilityState !== "visible" || sync.s === "missing") return;
+  if (Date.now() - lastCheck < (conn.token ? 60e3 : 180e3)) return;
+  lastCheck = Date.now(); syncNow({quiet:true});
+}
+setInterval(checkSoon, 15000);
+document.addEventListener("visibilitychange", checkSoon);
 
 function renderStatus(){
   const el = $("#status"), txt = $("#statusText");
