@@ -26,13 +26,19 @@ Skip the **Share** button and GatorWire works entirely offline, with no account 
 An editable four-way Venn diagram of Chief Engineer responsibilities and where their scopes overlap. A living document for future CEs.
 
 ## [Solar Evals](https://solar-gators.github.io/Custom-Apps/solarevals)
-Semester member reviews, filled out online instead of on paper. Sign in with your **[OneSolar](https://solar-gators.github.io/one.solar/)** account (the same one as the [Order Form](https://solar-gators.github.io/Orders-Form/)); everything is kept in the Order Form's database (it needs the Order Form's `028_solar_evals.sql` migration).
+Semester member reviews, filled out online instead of on paper. Sign in with your **[OneSolar](https://solar-gators.github.io/one.solar/)** account (the same one as the [Order Form](https://solar-gators.github.io/Orders-Form/)); everything is kept in the Order Form's database (it needs the Order Form's migrations `028_solar_evals.sql` and `031_eval_self_reviews.sql`).
 
 **Rubrics** holds the master template and a version for each CE division. Every saved version is kept, so the next CE sees what the last one used and why they changed it.
 - **Make your version:** open your division and click **Start from master** (or **Make a new version**). Click any text on the pages to change it, add or remove criterion rows, then **Save as new version** with a note on what changed.
 - **History** lists every version. **Compare** shows exactly what changed between any two. If the master changes after you made your version, your division shows a note linking to the changes.
 
-**Evaluations** is where CEs review members.
+**Evaluations** is where members and CEs fill out reviews. The usual order each semester:
+1. **The member** clicks **Fill out my self-eval**, picks their division, CE and lead, rates themselves and clicks **Submit**. Their CE is emailed. (They can **Take back** until the CE starts theirs.)
+2. **The CE** sees it under **Self-evals sent to you** and clicks **Start your eval** (same rubric). They fill it out with the lead's input. They don't see the member's answers yet.
+3. When the CE clicks **Mark finished**, the member's self-eval appears next to theirs, with big differences highlighted. The CE clicks **Schedule meeting**, and the member is emailed the time and place.
+4. After the meeting the CE clicks **Meeting done: share**. The member then reads both versions and can add comments.
+
+CEs can still start an eval without a self-eval:
 - **New evaluation:** pick the rubric (your division's latest), the member's name, their email (optional, for sharing) and the semester. Click a box to rate it (click again to clear), or N/O. Fill in the blanks and feedback boxes. It saves as you go.
 - **Mark finished** checks for unrated rows, and for 1/2/4/5 ratings with no evidence. A finished eval can be read by every CE, the e-board, and the subsystem lead you picked. **Share with member** lets the member read it and add their comments; it needs a OneSolar account with that email.
 - **Print / PDF** prints the filled-in form, on the same two landscape pages as the paper one.

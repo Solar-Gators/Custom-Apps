@@ -266,6 +266,37 @@ table.list .none{color:var(--muted);text-align:center;padding:22px}
 .st.draft{background:var(--flag-bg);color:var(--flag)}
 .st.final{background:var(--sel);color:var(--navy)}
 .st.shared{background:var(--ins);color:var(--ins-ink)}
+.st.self{background:var(--panel-2);color:var(--ink-2);border:1px solid var(--line)}
+
+/* ---------- self-evals waiting for a CE ---------- */
+.inbox{margin-bottom:18px}
+.inbox h3,.rv h3{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.inbox table.list{min-width:640px}
+.inbox .btn{padding:5px 11px;font-size:12.8px}
+
+/* ---------- the member's version next to the CE's ---------- */
+.rv{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);max-width:1056px;margin-bottom:18px}
+.rv summary{cursor:pointer;font-weight:900;color:var(--navy);font-size:15px}
+.rv .rvsub{color:var(--muted);font-size:13px;margin:4px 0 12px}
+.rv table{width:100%;border-collapse:collapse;font-size:14px}
+.rv th{text-align:left;font-size:11.5px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:7px 8px;border-bottom:1px solid var(--line)}
+.rv td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.rv td.n{white-space:nowrap;font-weight:700}
+.rv td.n .lbl{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.rv tr.gap td{background:var(--flag-bg)}
+.rv tr.gap td:last-child{color:var(--flag);font-weight:900}
+.rv .ans{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin-top:14px}
+.rv .ans .k{font-size:11.5px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);grid-column:1 / -1;margin-top:6px}
+.rv .ans .who{font-size:12px;color:var(--muted);font-weight:700}
+.rv .ans .v{white-space:pre-wrap;font-size:14px;color:var(--ink-2)}
+.rv .ans .v.none{color:var(--muted);font-style:italic}
+@media (max-width:640px){
+  .rv{padding:14px 12px}
+  .rv .ans{grid-template-columns:1fr}
+  .rv table{font-size:13px}
+  .rv th,.rv td{padding:6px 4px}
+  .rv td.n .lbl{display:none}
+}
 .savest{color:var(--muted)} .savest.bad{color:var(--bad);font-weight:700}
 .banner .inl{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
 .banner .inl .fi{width:240px;padding:6px 9px;text-transform:none;letter-spacing:0;font-weight:400}
@@ -319,7 +350,7 @@ table.rub td.lv.on::after{background:var(--navy);border-color:var(--navy);box-sh
 @page{size:letter landscape;margin:0}
 @media print{
   html,body{background:#fff!important}
-  header.site,aside.side,.tb,.banner,.ptools,.cmp,.empty,#toast,dialog,.ed{display:none!important}
+  header.site,aside.side,.tb,.banner,.ptools,.cmp,.rv,.inbox,.empty,#toast,dialog,.ed{display:none!important}
   .layout{display:block}
   main{padding:0}
   .sheets{overflow:visible;padding:0}
@@ -408,13 +439,48 @@ table.rub td.lv.on::after{background:var(--navy);border-color:var(--navy);box-sh
   <div class="dlg-a"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Start</button></div>
 </form></dialog>
 
+<!-- New self-evaluation (any member) -->
+<dialog id="dSelf"><form class="dlg" method="dialog">
+  <h3>Fill out your self-evaluation</h3>
+  <p class="lead">Rate yourself on your division's rubric. Only you can see it until you submit it to your CE. It saves as you go.</p>
+  <label class="fl" for="sfTrack">Your division</label>
+  <select class="fi" id="sfTrack" required></select>
+  <label class="fl" for="sfSem">Semester</label>
+  <input class="fi" id="sfSem" required maxlength="40" autocomplete="off">
+  <label class="fl" for="sfSub">Subsystem</label>
+  <input class="fi" id="sfSub" maxlength="80" autocomplete="off" placeholder="e.g. BMS">
+  <label class="fl" for="sfCe">Your CE</label>
+  <select class="fi" id="sfCe" required></select>
+  <div class="fh">They're emailed when you submit, and fill out their own eval of you.</div>
+  <label class="fl" for="sfLead">Your subsystem lead (optional)</label>
+  <select class="fi" id="sfLead"></select>
+  <div class="dlg-a"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Start</button></div>
+</form></dialog>
+
+<!-- Schedule the eval meeting (CE) -->
+<dialog id="dMeet"><form class="dlg" method="dialog">
+  <h3>Schedule the eval meeting</h3>
+  <p class="lead" id="meetLead"></p>
+  <label class="fl" for="mAt">When</label>
+  <input class="fi" id="mAt" type="datetime-local" required>
+  <label class="fl" for="mPlace">Where (optional)</label>
+  <input class="fi" id="mPlace" maxlength="200" autocomplete="off" placeholder="e.g. MAE-B lab, or a Teams link">
+  <div class="dlg-a"><button class="btn danger" value="clear" formnovalidate id="mClear">Remove meeting</button><span style="flex:1"></span>
+    <button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save and email them</button></div>
+</form></dialog>
+
 <div id="toast" role="status"></div>
 
 <script type="module">
 /* =========================================================
    SOLAR EVALS
    Signs in with OneSolar accounts (the Order Form's) and keeps everything in
-   the Order Form's database (migrations 028_solar_evals.sql, 030_onesolar_wording.sql).
+   the Order Form's database (migrations 028_solar_evals.sql, 030_onesolar_wording.sql,
+   031_eval_self_reviews.sql).
+   A semester review: the member submits a self-eval to their CE → the CE
+   writes theirs (with the lead's input) → once it's finished the CE sees the
+   self-eval and schedules the meeting → after the meeting the CE shares, and
+   the member reads both.
    What each person can see is enforced by the database, not
    by this page.
    ========================================================= */
@@ -471,6 +537,7 @@ function semesterNow(){
    ========================================================= */
 let me = null;              // {id, name, email, perms:Set}
 let people = [];            // every Order Form account: {id, full_name, email}
+let ceIds = new Set();      // accounts that can fill out evals (members pick their CE from these)
 const can = p => !!me && me.perms.has(p);
 const personName = id => { const p = people.find(x => x.id === id); return p ? (p.full_name || p.email) : ""; };
 
@@ -483,15 +550,22 @@ async function loadMe(session){
   const perms = (await rows(sb.from("role_permissions").select("permission").in("role", roles))).map(p => p.permission);
   me = {id, name:prof.full_name || prof.email, email:(prof.email || "").toLowerCase(), perms:new Set(perms)};
   people = await rows(sb.from("profiles").select("id, full_name, email").order("full_name"));
+  const [pr, rp] = await Promise.all([rows(sb.from("profile_roles").select("user_id, role")),
+    rows(sb.from("role_permissions").select("role, permission").eq("permission", "evals.write"))]);
+  const writerRoles = new Set(rp.map(r => r.role));
+  ceIds = new Set(pr.filter(r => writerRoles.has(r.role)).map(r => r.user_id));
 }
+const ces = () => people.filter(p => ceIds.has(p.id) && p.id !== me.id);
+/** Email / Teams messages the database queued (031): send them now. Failures are retried by the next run. */
+function sendQueued(){ try { sb.functions?.invoke("send-notifications", {body:{}}).catch(() => {}); } catch {} }
 
 function showSignIn(msg=""){
-  me = null; people = []; evals = []; evalState = null;   // nothing from the last person stays in memory
+  me = null; people = []; ceIds = new Set(); evals = []; inbox = []; evalState = null;   // nothing from the last person stays in memory
   $("#tabs").hidden = true; $("#acct").hidden = true;
   $("#layout").classList.add("nosb");
   $("#main").innerHTML = `<form class="signin" id="fSignIn">
       <h2>Sign in</h2>
-      <p class="lead">Use your <b>OneSolar</b> account. CEs fill out evaluations here; leads, the e-board and members read the ones they're allowed to see.</p>
+      <p class="lead">Use your <b>OneSolar</b> account. Members fill out their self-evaluation here, CEs write theirs, and leads and the e-board read the ones they're allowed to see.</p>
       ${msg ? `<div class="banner note"><span class="bt">${esc(msg)}</span></div>` : ""}
       <label class="fl" for="siEmail">UF email</label><input class="fi" id="siEmail" type="email" autocomplete="username" required>
       <label class="fl" for="siPass">Password</label><input class="fi" id="siPass" type="password" autocomplete="current-password" required>
@@ -726,8 +800,11 @@ function pagesHTML(r, opts){
   const blank = f => {
     if (!filling) return `<span class="ln"></span>`;
     const b = bindingFor(f);
-    let val = b === "lead_id" ? personName(ev.lead_id) : b === "evaluator" ? personName(ev.evaluator_id) : b ? (ev[b] || "") : (ev.fields?.[f] || "");
+    const self = ev.kind === "self";
+    let val = b === "lead_id" ? personName(ev.lead_id) : b === "evaluator" ? personName(self ? ev.ce_id : ev.evaluator_id) : b ? (ev[b] || "") : (ev.fields?.[f] || "");
     if (b === "review_date" && val) val = live ? val : fmtDate(val + "T12:00:00");
+    if (live && self && b === "evaluator") return `<span class="ln"><select class="fin" data-bind="ce_id" aria-label="${esc(f)}"><option value="">—</option>${
+      ces().map(p => `<option value="${esc(p.id)}"${p.id === ev.ce_id ? " selected" : ""}>${esc(p.full_name || p.email)}</option>`).join("")}</select></span>`;
     if (!live || b === "evaluator") return `<span class="ln val">${esc(val)}</span>`;
     if (b === "lead_id") return `<span class="ln"><select class="fin" data-bind="lead_id" aria-label="${esc(f)}"><option value="">—</option>${
       people.map(p => `<option value="${esc(p.id)}"${p.id === ev.lead_id ? " selected" : ""}>${esc(p.full_name || p.email)}</option>`).join("")}</select></span>`;
@@ -771,7 +848,7 @@ function pagesHTML(r, opts){
       let h = live
         ? `<textarea class="bta" data-box="${esc(b.id)}" rows="${lines}" style="--lines:${lines}" aria-label="${esc(b.title)}" maxlength="4000">${esc(txt)}</textarea>`
         : `<div class="bta" style="--lines:${lines}">${esc(txt)}</div>`;
-      if (isMemberBox(b)) {
+      if (isMemberBox(b) && ev.kind !== "self") {
         const mine = ev.status === "shared" && ev.member_id === me.id;
         if (mine) h += `<div class="mc"><b>Your comments</b> <span class="mcs" id="mcState"></span>
             <textarea class="bta" data-mc rows="3" style="--lines:3" maxlength="4000" aria-label="Your comments">${esc(ev.member_comments || "")}</textarea></div>`;
@@ -1062,10 +1139,34 @@ function exportData(){
    ========================================================= */
 let evals = [];
 let filt = {q:"", semester:"", status:"", mine:false};
-const LIST_COLS = "id, member_name, member_email, member_id, semester, division, subsystem, lead_id, evaluator_id, status, template_label, updated_at, finalized_at, shared_at, member_commented_at";
-async function loadEvals(){ evals = await rows(sb.from("evals").select(LIST_COLS).order("updated_at", {ascending:false})); }
+let inbox = [];   // self-evals members submitted to me (CEs): who and when, not the answers
+const LIST_COLS = "id, kind, member_name, member_email, member_id, semester, division, subsystem, lead_id, evaluator_id, ce_id, self_eval_id, status, template_label, updated_at, finalized_at, shared_at, member_commented_at, meeting_at, meeting_place";
+async function loadEvals(){
+  const [list, box] = await Promise.all([
+    rows(sb.from("evals").select(LIST_COLS).order("updated_at", {ascending:false})),
+    can("evals.write") ? call("eval_inbox", {}) : []
+  ]);
+  evals = list; inbox = box || [];
+}
 const STATUS = {draft:"Draft", final:"Finished", shared:"Shared with member"};
-const statusBadge = s => `<span class="st ${s}">${STATUS[s] || s}</span>`;
+const SELF_STATUS = {draft:"Self-eval draft", final:"Self-eval submitted"};
+const statusBadge = (s, kind) => kind === "self" ? `<span class="st ${s === "draft" ? "draft" : "self"}">${SELF_STATUS[s] || s}</span>` : `<span class="st ${s}">${STATUS[s] || s}</span>`;
+const fmtWhen = iso => iso ? new Date(iso).toLocaleString(undefined, {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}) : "";
+const writerOf = e => e.kind === "self" ? e.ce_id : e.evaluator_id;
+
+function inboxHTML(){
+  if (!inbox.length) return "";
+  const waiting = inbox.filter(r => !r.ce_eval_id || r.ce_status === "draft").length;
+  return `<section class="inbox"><h3>Self-evals sent to you${waiting ? ` · ${waiting} waiting for your eval` : ""}</h3>
+    <div class="tablewrap"><table class="list"><thead><tr><th>Member</th><th>Semester</th><th>Division · subsystem</th><th>Submitted</th><th>Your eval</th><th>Meeting</th><th></th></tr></thead><tbody>
+    ${inbox.map(r => `<tr>
+      <td><b>${esc(r.member_name || "Unnamed")}</b></td><td>${esc(r.semester)}</td>
+      <td>${esc([r.division, r.subsystem].filter(Boolean).join(" · "))}</td><td>${fmtDate(r.submitted_at)}</td>
+      <td>${r.ce_eval_id ? statusBadge(r.ce_status) : '<span class="st draft">Not started</span>'}</td>
+      <td>${r.meeting_at ? esc(fmtWhen(r.meeting_at)) : '<span class="savest">—</span>'}</td>
+      <td>${r.ce_eval_id ? `<a class="btn" href="#/evals/${esc(r.ce_eval_id)}">Open your eval</a>` : `<button class="btn primary" data-act="evStart" data-id="${esc(r.self_id)}">Start your eval</button>`}</td></tr>`).join("")}
+    </tbody></table></div></section>`;
+}
 
 function renderList(){
   const m = $("#main"), writer = can("evals.write");
@@ -1073,16 +1174,18 @@ function renderList(){
   const q = filt.q.toLowerCase();
   const shown = evals.filter(e => (!filt.semester || e.semester === filt.semester) && (!filt.status || e.status === filt.status)
     && (!filt.mine || e.evaluator_id === me.id)
-    && (!q || [e.member_name, e.member_email, e.subsystem, e.division, personName(e.evaluator_id)].join(" ").toLowerCase().includes(q)));
-  const who = can("evals.view") ? "Every finished evaluation, and your own drafts."
-    : writer ? "Evaluations you wrote, and ones where you're the subsystem lead."
-    : "Evaluations where you're the subsystem lead, and ones your CE has shared with you.";
-  const acts = writer ? `<button class="btn primary" data-act="newEval">New evaluation</button>` : "";
-  let h = toolbarHTML("Evaluations", `<div class="meta">${who}</div>`, acts, "var(--orange)");
+    && (!q || [e.member_name, e.member_email, e.subsystem, e.division, personName(writerOf(e))].join(" ").toLowerCase().includes(q)));
+  const who = can("evals.view") ? "Every finished evaluation, your own drafts, and self-evals once the CE's eval is finished."
+    : writer ? "Evaluations you wrote, ones where you're the subsystem lead, and your members' self-evals once your eval is finished."
+    : "Your self-evaluations, evaluations where you're the subsystem lead, and your CE's evaluation of you once it's shared.";
+  const acts = (writer ? `<button class="btn" data-act="newSelf">My self-eval</button><button class="btn primary" data-act="newEval">New evaluation</button>`
+    : `<button class="btn primary" data-act="newSelf">Fill out my self-eval</button>`);
+  let h = toolbarHTML("Evaluations", `<div class="meta">${who}</div>`, acts, "var(--orange)") + inboxHTML();
   if (!evals.length) {
-    h += writer ? `<div class="empty"><h3>No evaluations yet</h3><p>Start one for a member. It's a draft only you can see until you mark it finished.</p>
+    h += writer ? `<div class="empty"><h3>No evaluations yet</h3><p>When a member submits their self-eval to you it shows up above. You can also start an eval for a member yourself; it's a draft only you can see until you mark it finished.</p>
         <div class="row"><button class="btn primary" data-act="newEval">New evaluation</button></div></div>`
-      : `<div class="empty"><h3>Nothing to show yet</h3><p>Evaluations appear here when a CE picks you as a member's subsystem lead, or shares your own evaluation with you (sent to <b>${esc(me.email)}</b>).</p></div>`;
+      : `<div class="empty"><h3>Start with your self-evaluation</h3><p>Rate yourself on your division's rubric and submit it to your CE. They fill out theirs, then you meet. After the meeting you'll see their evaluation here next to yours.</p>
+        <div class="row"><button class="btn primary" data-act="newSelf">Fill out my self-eval</button></div></div>`;
     m.innerHTML = h; return;
   }
   h += `<div class="filters">
@@ -1095,8 +1198,9 @@ function renderList(){
     ${shown.map(e => `<tr data-act="openEval" data-id="${esc(e.id)}" tabindex="0">
         <td><b>${esc(e.member_name || "Unnamed")}</b>${e.member_id === me.id ? ' <span class="badge">You</span>' : ""}</td>
         <td>${esc(e.semester)}</td><td>${esc([e.division, e.subsystem].filter(Boolean).join(" · "))}</td>
-        <td>${esc(personName(e.lead_id))}</td><td>${esc(personName(e.evaluator_id))}</td>
-        <td>${statusBadge(e.status)}${e.member_commented_at ? ' <span class="badge" title="The member added comments">Comments</span>' : ""}</td>
+        <td>${esc(personName(e.lead_id))}</td><td>${esc(personName(writerOf(e)))}</td>
+        <td>${statusBadge(e.status, e.kind)}${e.member_commented_at ? ' <span class="badge" title="The member added comments">Comments</span>' : ""}${
+          e.meeting_at && e.status !== "shared" && new Date(e.meeting_at) > Date.now() - 6 * 3600e3 ? ` <span class="badge" title="Eval meeting">${esc(fmtWhen(e.meeting_at))}</span>` : ""}</td>
         <td>${fmtDate(e.updated_at)}</td></tr>`).join("") || `<tr><td colspan="7" class="none">No evaluations match.</td></tr>`}
     </tbody></table></div>`;
   m.innerHTML = h;
@@ -1141,18 +1245,78 @@ $("#dNew").addEventListener("close", async () => {
   } catch (e) { fail("Couldn't start the evaluation", e); }
 });
 
+/* ---------- the member starts their self-eval ---------- */
+function openNewSelf(){
+  // A division without its own rubric version yet uses the master template.
+  const ce = db.tracks.filter(t => t.kind !== "master"), last = lsGet("sg-evals-self-track");
+  $("#sfTrack").innerHTML = ce.map(t => `<option value="${esc(t.id)}">${esc(t.name.replace(/\s+CE$/i, ""))}</option>`).join("")
+    + `<option value="master">Not sure / other (general rubric)</option>`;
+  $("#sfTrack").value = track(last) ? last : (ce[0]?.id || "master");
+  $("#sfSem").value = semesterNow(); $("#sfSub").value = "";
+  const opt = (list, none) => `<option value="">${none}</option>` + list.map(p => `<option value="${esc(p.id)}">${esc(p.full_name || p.email)}</option>`).join("");
+  $("#sfCe").innerHTML = opt(ces(), "Pick your CE");
+  $("#sfLead").innerHTML = opt(people.filter(p => p.id !== me.id), "—");
+  openDlg("#dSelf");
+}
+$("#dSelf").addEventListener("close", async () => {
+  if ($("#dSelf").returnValue !== "ok") return;
+  const t = track($("#sfTrack").value) || track("master"), v = latest(t.id) || latest("master");
+  lsSet("sg-evals-self-track", t.id);
+  try {
+    const id = await call("eval_self_save", {p_id:null, p:{template_id:v.id, semester:$("#sfSem").value.trim(), subsystem:$("#sfSub").value.trim(),
+      division:t.kind === "master" ? "" : t.name.replace(/\s+CE$/i, ""), ce_id:$("#sfCe").value, lead_id:$("#sfLead").value}});
+    await loadEvals();
+    location.hash = "#/evals/" + id;
+  } catch (e) { fail("Couldn't start your self-eval", e); }
+});
+async function startReview(selfId){
+  try { const id = await call("eval_start_review", {p_self:selfId}); await loadEvals(); location.hash = "#/evals/" + id; }
+  catch (e) { fail("Couldn't start your eval", e); }
+}
+
 /* =========================================================
    EVALUATIONS: ONE EVAL
    The CE who wrote it edits it on the page; it saves as you go.
    Everyone else who can see it reads it.
    ========================================================= */
-let evalState = null;     // {row, live, dirty, saving, err, timer}
+let evalState = null;     // {row, other, dirty, saving, err, timer}; other = the linked self-eval / CE eval, if you may see it
 async function openEval(id){
   if (evalState?.row.id === id) return;
   const row = (await rows(sb.from("evals").select("*").eq("id", id)))[0];
-  evalState = row ? {row, dirty:false, saving:false, err:"", timer:null} : {row:{id, missing:true}};
+  let other = null;
+  if (row?.kind === "self") other = (await rows(sb.from("evals").select("*").eq("self_eval_id", row.id)))[0] || null;
+  else if (row?.self_eval_id) other = (await rows(sb.from("evals").select("*").eq("id", row.self_eval_id)))[0] || null;
+  evalState = row ? {row, other, dirty:false, saving:false, err:"", timer:null} : {row:{id, missing:true}};
 }
-const evalLive = () => evalState && !evalState.row.missing && evalState.row.evaluator_id === me.id && evalState.row.status !== "shared" && can("evals.write");
+const evalLive = () => {
+  const r = evalState?.row;
+  if (!r || r.missing || r.evaluator_id !== me.id) return false;
+  return r.kind === "self" ? r.status === "draft" : r.status !== "shared" && can("evals.write");
+};
+
+/* The member's ratings and answers next to the CE's (once the CE's eval is finished). */
+function reviewHTML(ce, self){
+  if (!ce || !self) return "";
+  const r = ce.rubric, crit = r.pages.flatMap(p => p.criteria), boxes = r.pages.flatMap(p => p.boxes);
+  const show = v => v == null ? '<span class="savest">—</span>' : v === "NO" ? "N/O" : `${v}<span class="lbl">${esc(r.scale[v - 1] || "")}</span>`;
+  const rowsH = crit.map(c => {
+    const a = self.ratings?.[c.id], b = ce.ratings?.[c.id];
+    const gap = typeof a === "number" && typeof b === "number" ? a - b : null;
+    return `<tr class="${gap != null && Math.abs(gap) >= 2 ? "gap" : ""}"><td>${esc(c.name || "Untitled")}</td><td class="n">${show(a)}</td><td class="n">${show(b)}</td>
+      <td>${gap == null || gap === 0 ? "" : gap > 0 ? `Member +${gap}` : `CE +${-gap}`}</td></tr>`;
+  }).join("");
+  const memberName = esc(self.member_name || "Member"), ceName = esc(personName(ce.evaluator_id) || "CE");
+  const ans = boxes.filter(b => (self.answers?.[b.id] || "").trim() || (ce.answers?.[b.id] || "").trim()).map(b => {
+    const v = t => (t || "").trim() ? `<div class="v">${esc(t)}</div>` : `<div class="v none">Nothing written</div>`;
+    return `<div class="k">${esc(b.title)}</div><div><div class="who">${memberName}</div>${v(self.answers?.[b.id])}</div><div><div class="who">${ceName}</div>${v(ce.answers?.[b.id])}</div>`;
+  }).join("");
+  return `<details class="rv" open><summary>${memberName}'s self-eval next to ${ceName}'s eval</summary>
+    <div class="rvsub">Rows where they're 2 or more apart are highlighted: good things to talk about in the meeting.
+      <a href="#/evals/${esc(self.id)}">Self-eval</a> · <a href="#/evals/${esc(ce.id)}">CE's eval</a></div>
+    <table><thead><tr><th>Criterion</th><th>${memberName}</th><th>${ceName}</th><th></th></tr></thead><tbody>${rowsH}</tbody></table>
+    ${ans ? `<div class="ans">${ans}</div>` : ""}</details>`;
+}
+const meetingText = r => r.meeting_at ? `<b>${esc(fmtWhen(r.meeting_at))}</b>${r.meeting_place ? ` · ${esc(r.meeting_place)}` : ""}` : "";
 
 function renderEval(){
   const m = $("#main"), e = evalState?.row;
@@ -1161,29 +1325,104 @@ function renderEval(){
       `<div class="empty"><h3>Can't open this evaluation</h3><p>It may have been deleted, moved back to draft, or it isn't one you're allowed to see.</p></div>`;
     return;
   }
-  const live = evalLive(), mineToWrite = e.evaluator_id === me.id;
+  if (e.kind === "self") { renderSelf(); return; }
+  const live = evalLive(), mineToWrite = e.evaluator_id === me.id, self = evalState.other, linked = !!e.self_eval_id;
+  const who = esc(e.member_name || "the member");
   m.classList.toggle("filling", live);
   const meta = `<div class="meta">${statusBadge(e.status)} · ${esc(e.template_label)} · written by <b>${esc(personName(e.evaluator_id) || "a former member")}</b>
      · updated ${fmtDate(e.updated_at)}${e.shared_at ? ` · shared ${fmtDate(e.shared_at)}` : ""} <span class="savest" id="saveState"></span></div>`;
   let acts = `<a class="btn" href="#/evals">All evaluations</a>`;
   if (mineToWrite) {
     if (e.status === "draft") acts += `<button class="btn danger" data-act="evDelete">Delete draft</button><button class="btn primary" data-act="evStatus" data-s="final">Mark finished</button>`;
-    if (e.status === "final") acts += `<button class="btn" data-act="evStatus" data-s="draft">Back to draft</button><button class="btn primary" data-act="evShare">Share with member</button>`;
+    if (e.status === "final" && linked) acts += `<button class="btn" data-act="evStatus" data-s="draft">Back to draft</button>
+      <button class="btn" data-act="evMeet">${e.meeting_at ? "Change meeting" : "Schedule meeting"}</button><button class="btn primary" data-act="evShare">Meeting done: share with ${who}</button>`;
+    else if (e.status === "final") acts += `<button class="btn" data-act="evStatus" data-s="draft">Back to draft</button><button class="btn primary" data-act="evShare">Share with member</button>`;
     if (e.status === "shared") acts += `<button class="btn" data-act="evStatus" data-s="final">Stop sharing</button>`;
   }
   acts += `<button class="btn" data-act="evPrint">Print / PDF</button>`;
   let h = toolbarHTML(e.member_name || "Unnamed member", meta, acts, "var(--orange)");
-  if (mineToWrite) {
+  if (mineToWrite && linked) {
+    const lead = e.lead_id ? `<b>${esc(personName(e.lead_id))}</b>` : "their subsystem lead";
+    const tip = {draft:`Started from ${who}'s self-evaluation. Fill out yours with ${lead}'s input; you'll see ${who}'s answers once you mark yours finished. Only you can see this draft.`,
+      final:`Finished. You can now see ${who}'s self-eval below; so can ${lead}, the e-board and other CEs. ${e.meeting_at ? `Eval meeting: ${meetingText(e)}.` : "Next, schedule the eval meeting."} After the meeting, share your eval so ${who} can read it.`,
+      shared:`Shared with ${who} after the meeting. They can read it next to their self-eval and add comments. You can't change it while it's shared; stop sharing to edit.`}[e.status];
+    h += `<div class="banner note"><span class="bt">${tip}</span></div>`;
+  } else if (mineToWrite) {
     const tip = {draft:"Only you can see this draft. When you mark it finished, other CEs, the e-board and the subsystem lead you picked can read it.",
       final:"Finished: other CEs, the e-board and the subsystem lead can read it. Share it when the member should see it too.",
       shared:`Shared with ${esc(e.member_name || "the member")}. You can't change it while it's shared; stop sharing to edit.`}[e.status];
-    h += `<div class="banner note"><span class="bt">${tip}</span>${live ? `<label class="inl">Member's email <input class="fi" id="evEmail" type="email" value="${esc(e.member_email)}" placeholder="for sharing" maxlength="200"></label>` : ""}</div>`;
+    h += `<div class="banner note"><span class="bt">${tip}</span>${live && !e.self_eval_id ? `<label class="inl">Member's email <input class="fi" id="evEmail" type="email" value="${esc(e.member_email)}" placeholder="for sharing" maxlength="200"></label>` : ""}</div>`;
   } else if (e.member_id === me.id) {
     h += `<div class="banner note"><span class="bt">This is your evaluation from <b>${esc(personName(e.evaluator_id))}</b>. Add your own comments in <b>Member comments</b> at the end; they save as you type.</span></div>`;
+  } else if (linked && e.meeting_at && e.status !== "shared") {
+    h += `<div class="banner note"><span class="bt">Eval meeting: ${meetingText(e)}.</span></div>`;
   }
+  h += reviewHTML(e, self);
   h += `<div class="sheets"><div class="sheetwrap">${pagesHTML(e.rubric, {mode:"fill", ev:e, live, who:e.template_label.split(" · ")[0] || "Solar Evals", label:e.semester || ""})}</div></div>`;
   m.innerHTML = h; afterPages(); showSaveState();
 }
+
+/* A self-evaluation: the member fills it out; their CE (and lead, e-board) read it once the CE's eval is finished. */
+function renderSelf(){
+  const m = $("#main"), e = evalState.row, live = evalLive(), mine = e.evaluator_id === me.id, ce = evalState.other;
+  const ceName = esc(personName(e.ce_id) || "your CE");
+  m.classList.toggle("filling", live);
+  const meta = `<div class="meta">${statusBadge(e.status, "self")} · ${esc(e.template_label)} · ${mine ? "your self-evaluation" : `by <b>${esc(e.member_name)}</b>`}
+     · CE <b>${esc(personName(e.ce_id) || "not picked yet")}</b>${e.finalized_at ? ` · submitted ${fmtDate(e.finalized_at)}` : ""} <span class="savest" id="saveState"></span></div>`;
+  let acts = `<a class="btn" href="#/evals">All evaluations</a>`;
+  if (mine && e.status === "draft") acts += `<button class="btn danger" data-act="evDelete">Delete draft</button><button class="btn primary" data-act="selfSubmit">Submit to ${e.ce_id ? ceName : "your CE"}</button>`;
+  if (mine && e.status !== "draft" && !ce) acts += `<button class="btn" data-act="selfBack">Take back</button>`;
+  acts += `<button class="btn" data-act="evPrint">Print / PDF</button>`;
+  let h = toolbarHTML(mine ? "Your self-evaluation" : `${e.member_name || "Member"}'s self-evaluation`, meta, acts, "var(--orange)");
+  let tip;
+  if (mine && e.status === "draft") tip = `Rate yourself honestly; a 3 means you fully meet expectations. Only you can see this. ${e.ce_id ? "When you're done, submit it" : "Pick your CE in <b>Evaluating CE</b>, then submit"}: ${ceName} is emailed and fills out their own eval of you.`;
+  else if (mine && ce) tip = `<b>${esc(personName(ce.evaluator_id))}</b> shared your evaluation after your meeting. It's below next to your self-eval. <a href="#/evals/${esc(ce.id)}">Open it</a> to add your comments.`;
+  else if (mine) tip = `Submitted to ${ceName}. They fill out their eval of you next${e.meeting_at ? "" : " and then schedule your eval meeting"}. You'll see their evaluation here after the meeting.`
+    + (e.meeting_at ? ` <br>Your eval meeting: ${meetingText(e)}.` : "");
+  else tip = `${esc(e.member_name)}'s own ratings and answers.${e.meeting_at ? ` Eval meeting: ${meetingText(e)}.` : ""}`;
+  h += `<div class="banner note"><span class="bt">${tip}</span></div>`;
+  h += reviewHTML(ce, e);
+  h += `<div class="sheets"><div class="sheetwrap">${pagesHTML(e.rubric, {mode:"fill", ev:e, live, who:"Self-evaluation", label:e.semester || ""})}</div></div>`;
+  m.innerHTML = h; afterPages(); showSaveState();
+}
+async function submitSelf(on){
+  const r = evalState.row;
+  await flushEval();
+  if (on) {
+    if (!r.ce_id) { toast("Pick your CE in Evaluating CE first.", 5000); $('[data-bind="ce_id"]')?.focus(); return; }
+    const p = evalProblems(r).filter(x => !/need specific examples/.test(x));
+    if (!confirm(`${p.length ? `Before you submit:\n\n• ${p.join("\n• ")}\n\n` : ""}Submit your self-eval to ${personName(r.ce_id)}?\n\nThey're emailed, and see your answers once they've finished their own eval. You can take it back until they start theirs.`)) return;
+  }
+  try {
+    await call("eval_self_submit", {p_id:r.id, p_submit:on});
+    if (on) sendQueued();
+    await reloadEval();
+    toast(on ? `Submitted to ${personName(r.ce_id)}.` : "Taken back. It's a draft again.");
+  } catch (e) { fail(on ? "Couldn't submit it" : "Couldn't take it back", e); }
+}
+
+/* ---------- the eval meeting ---------- */
+const localInput = iso => { const d = new Date(iso); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); };
+function openMeeting(){
+  const r = evalState.row;
+  $("#meetLead").textContent = `${r.member_name || "The member"} is emailed the time and place. You can change it later.`;
+  $("#mAt").value = r.meeting_at ? localInput(r.meeting_at) : "";
+  $("#mPlace").value = r.meeting_place || "";
+  $("#mClear").hidden = !r.meeting_at;
+  openDlg("#dMeet"); $("#mAt").focus();
+}
+$("#dMeet").addEventListener("close", async () => {
+  const how = $("#dMeet").returnValue; if (how !== "ok" && how !== "clear") return;
+  const r = evalState?.row; if (!r) return;
+  const at = how === "ok" && $("#mAt").value ? new Date($("#mAt").value).toISOString() : null;
+  if (how === "ok" && !at) return;
+  try {
+    await call("eval_schedule_meeting", {p_id:r.id, p_at:at, p_place:$("#mPlace").value.trim()});
+    if (at) sendQueued();
+    await reloadEval();
+    toast(at ? `Meeting saved. ${r.member_name || "The member"} is emailed.` : "Meeting removed.");
+  } catch (e) { fail("Couldn't save the meeting", e); }
+});
 
 function onEvalInput(ev){
   const st = evalState, t = ev.target; if (!st) return;
@@ -1194,7 +1433,8 @@ function onEvalInput(ev){
   if (t.id === "evEmail") r.member_email = t.value.trim();
   else if (t.dataset.bind) {
     r[t.dataset.bind] = t.value;
-    if (t.dataset.bind === "member_name") $(".tb-t h2").textContent = t.value || "Unnamed member";
+    if (t.dataset.bind === "member_name" && r.kind !== "self") $(".tb-t h2").textContent = t.value || "Unnamed member";
+    if (t.dataset.bind === "ce_id") { const b = $('[data-act="selfSubmit"]'); if (b) b.textContent = `Submit to ${personName(t.value) || "your CE"}`; }
     $$(`[data-bind="${t.dataset.bind}"]`).forEach(o => { if (o !== t) o.value = t.value; });   // e.g. Member on both pages
   }
   else if (t.dataset.field != null) { r.fields = {...r.fields, [t.dataset.field]:t.value}; $$(`[data-field="${CSS.escape(t.dataset.field)}"]`).forEach(o => { if (o !== t) o.value = t.value; }); }
@@ -1218,8 +1458,11 @@ async function flushEval(){
   if (st.saving) { await st.saving; return flushEval(); }
   clearTimeout(st.timer); st.dirty = false;
   const r = st.row;
-  st.saving = call("eval_save", {p_id:r.id, p:{member_name:r.member_name, member_email:r.member_email, semester:r.semester, division:r.division,
-    subsystem:r.subsystem, lead_id:r.lead_id || "", review_date:r.review_date || "", fields:r.fields, ratings:r.ratings, answers:r.answers}})
+  st.saving = (r.kind === "self"
+    ? call("eval_self_save", {p_id:r.id, p:{member_name:r.member_name, semester:r.semester, division:r.division, subsystem:r.subsystem,
+        ce_id:r.ce_id || "", lead_id:r.lead_id || "", review_date:r.review_date || "", fields:r.fields, ratings:r.ratings, answers:r.answers}})
+    : call("eval_save", {p_id:r.id, p:{member_name:r.member_name, member_email:r.member_email, semester:r.semester, division:r.division,
+        subsystem:r.subsystem, lead_id:r.lead_id || "", review_date:r.review_date || "", fields:r.fields, ratings:r.ratings, answers:r.answers}}))
     .then(() => { st.err = ""; r.updated_at = new Date().toISOString(); })
     .catch(e => { st.err = e.message; st.dirty = true; st.timer = setTimeout(flushEval, 8000); })
     .finally(() => { st.saving = false; showSaveState(); });
@@ -1263,18 +1506,25 @@ async function setEvalStatus(s){
   try {
     await call("eval_set_status", {p_id:r.id, p_status:s});
     await reloadEval();
-    toast({draft:"Back to draft.", final:r.status === "shared" ? "No longer shared with the member." : "Marked finished.", shared:"Shared."}[s]);
+    toast({draft:"Back to draft.", final:r.status === "shared" ? "No longer shared with the member."
+      : r.self_eval_id ? `Marked finished. ${r.member_name || "The member"}'s self-eval is now shown next to yours.` : "Marked finished.", shared:"Shared."}[s]);
   } catch (e) { fail("Couldn't change it", e); }
 }
 async function shareEval(){
   const r = evalState.row;
   await flushEval();
+  if (r.self_eval_id) {
+    if (!confirm(`Share with ${r.member_name || "the member"} now that you've met?\n\nThey'll read your evaluation next to their self-eval and can add their own comments. They're emailed. You can't edit it while it's shared.`)) return;
+    try { await call("eval_set_status", {p_id:r.id, p_status:"shared"}); sendQueued(); await reloadEval(); toast(`Shared with ${r.member_name || "the member"}.`); }
+    catch (e) { fail("Couldn't share it", e); }
+    return;
+  }
   const email = (r.member_email || "").toLowerCase();
   if (!email) { toast("Add the member's email first (in the bar above the form).", 5000); $("#evEmail")?.focus(); return; }
   const acct = people.find(p => (p.email || "").toLowerCase() === email);
   if (!acct) { alert(`Nobody has a OneSolar account with ${email} yet.\n\nAsk ${r.member_name || "them"} to create one at ${ORDERS_URL} with that email, then share again.`); return; }
   if (!confirm(`Share with ${acct.full_name || acct.email} (${acct.email})?\n\nThey'll be able to read this evaluation when signed in, and add their own comments. You can't edit it while it's shared.`)) return;
-  try { await call("eval_set_status", {p_id:r.id, p_status:"shared"}); await reloadEval(); toast(`Shared with ${acct.full_name || acct.email}.`); }
+  try { await call("eval_set_status", {p_id:r.id, p_status:"shared"}); sendQueued(); await reloadEval(); toast(`Shared with ${acct.full_name || acct.email}.`); }
   catch (e) { fail("Couldn't share it", e); }
 }
 async function reloadEval(){
@@ -1283,7 +1533,7 @@ async function reloadEval(){
 }
 async function deleteEval(){
   const r = evalState.row;
-  if (!confirm(`Delete the draft for ${r.member_name || "this member"}? This can't be undone.`)) return;
+  if (!confirm(r.kind === "self" ? "Delete your self-eval draft? This can't be undone." : `Delete the draft for ${r.member_name || "this member"}? This can't be undone.`)) return;
   try { clearTimeout(evalState.timer); evalState.dirty = false; await call("eval_delete", {p_id:r.id}); evalState = null; await loadEvals(); location.hash = "#/evals"; toast("Draft deleted."); }
   catch (e) { fail("Couldn't delete it", e); }
 }
@@ -1330,6 +1580,11 @@ document.addEventListener("click", e => {
     case "evStatus": setEvalStatus(d.s); break;
     case "evShare": shareEval(); break;
     case "evDelete": deleteEval(); break;
+    case "newSelf": openNewSelf(); break;
+    case "evStart": startReview(d.id); break;
+    case "selfSubmit": submitSelf(true); break;
+    case "selfBack": if (confirm("Take your self-eval back? It becomes a draft only you can see, until you submit it again.")) submitSelf(false); break;
+    case "evMeet": openMeeting(); break;
     case "evPrint": printEval(); break;
   }
 });
