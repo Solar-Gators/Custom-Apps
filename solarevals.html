@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solar Evals</title>
+<meta name="description" content="Solar Gators semester evaluation rubric: the master template and every CE's saved versions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   APP CHROME (follows light / dark)
+   The rubric pages themselves always stay white paper.
+   ========================================================= */
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --panel-2:#f7f9fb; --ink:#16202b; --ink-2:#34414e; --muted:#5b6e7c;
+  --line:#dfe5ea; --accent:#15314d; --accent-ink:#ffffff; --orange:#ef872d; --flag:#9a5a00; --flag-bg:#fdf3e4;
+  --ok:#1f7a4d; --bad:#b4372f; --ins:#dff3e6; --ins-ink:#11603a; --del:#fbe3e1; --del-ink:#9b2c24;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 8px 22px -10px rgba(16,24,40,.18);
+  --font:"Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1520; --panel:#131f2c; --panel-2:#182635; --ink:#e6edf3; --ink-2:#c5d1dc; --muted:#93a3b1;
+    --line:#26384a; --accent:#ef872d; --accent-ink:#1a1206; --flag:#f3b25c; --flag-bg:#2d2213;
+    --ok:#5cc48d; --bad:#f08a80; --ins:#173a28; --ins-ink:#8fe0b3; --del:#3f1d1b; --del-ink:#f5a39b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px -10px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1520; --panel:#131f2c; --panel-2:#182635; --ink:#e6edf3; --ink-2:#c5d1dc; --muted:#93a3b1;
+  --line:#26384a; --accent:#ef872d; --accent-ink:#1a1206; --flag:#f3b25c; --flag-bg:#2d2213;
+  --ok:#5cc48d; --bad:#f08a80; --ins:#173a28; --ins-ink:#8fe0b3; --del:#3f1d1b; --del-ink:#f5a39b;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 26px -10px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,h4{margin:0}
+
+header.site{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);
+  box-shadow:inset 0 3px 0 var(--orange);display:flex;align-items:center;gap:14px;padding:12px 20px 10px}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .mark{width:5px;height:34px;background:var(--accent);border-radius:1px;flex:none}
+.brand h1{font-size:20px;font-weight:900;letter-spacing:.01em;line-height:1.1;white-space:nowrap}
+.brand .sub{font-size:12.5px;color:var(--muted)}
+header.site .spacer{flex:1}
+.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel-2);
+  border-radius:999px;padding:6px 13px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.status[data-s="ok"] .dot{background:var(--ok)}
+.status[data-s="saving"] .dot{background:var(--orange)}
+.status[data-s="error"] .dot,.status[data-s="missing"] .dot{background:var(--bad)}
+.status[data-s="readonly"] .dot,.status[data-s="local"] .dot{background:var(--flag)}
+
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:calc(100vh - 60px)}
+aside.side{border-right:1px solid var(--line);background:var(--panel);padding:16px 12px 24px;position:sticky;top:60px;
+  height:calc(100vh - 60px);overflow:auto}
+.sb-h{font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:14px 8px 7px}
+.sb-h:first-child{margin-top:0}
+.trk{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid transparent;background:none;
+  border-radius:10px;padding:9px 10px;cursor:pointer;color:var(--ink)}
+.trk:hover{background:var(--panel-2)}
+.trk.on{background:var(--panel-2);border-color:var(--line)}
+.trk .sw{width:4px;align-self:stretch;border-radius:2px;background:var(--c,#888);flex:none}
+.trk .nm{font-weight:700;font-size:14px;line-height:1.25}
+.trk .mt{font-size:12.3px;color:var(--muted);margin-top:2px}
+.badge{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;border-radius:5px;
+  padding:1px 6px;background:var(--flag-bg);color:var(--flag);margin-left:4px;vertical-align:1px}
+.sb-foot{margin-top:18px;padding:12px 8px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:7px}
+.linkbtn{background:none;border:0;padding:4px 0;color:var(--muted);font-size:13px;cursor:pointer;text-align:left}
+.linkbtn:hover{color:var(--ink);text-decoration:underline}
+
+main{padding:20px 24px 60px;min-width:0}
+.tb{display:flex;flex-wrap:wrap;gap:14px 18px;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+.tb-t{min-width:0;border-left:4px solid var(--c,#888);padding-left:12px}
+.tb-t h2{font-size:22px;font-weight:900;line-height:1.15}
+.tb-t .meta{font-size:13px;color:var(--muted);margin-top:4px;max-width:80ch}
+.tb-t .meta b{color:var(--ink-2)}
+.tb-a{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 14px;font-size:13.5px;font-weight:700;
+  cursor:pointer;white-space:nowrap;color:var(--ink-2)}
+.btn:hover{border-color:var(--muted);color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08);color:var(--accent-ink)}
+.btn.danger{color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:default}
+select.sel{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 10px;font-size:13.5px;font-weight:700;max-width:100%}
+
+.banner{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;border:1px solid var(--line);
+  border-left:4px solid var(--orange);background:var(--panel);border-radius:10px;padding:11px 14px;margin-bottom:14px;font-size:14px}
+.banner.note{border-left-color:var(--flag);background:var(--flag-bg)}
+.banner .bt{color:var(--ink-2)}
+.banner .bt b{color:var(--ink)}
+
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:14px;padding:34px 26px;text-align:center;max-width:640px;margin:30px auto}
+.empty h3{font-size:18px;margin-bottom:6px}
+.empty p{color:var(--muted);margin:0 0 18px}
+.empty .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+
+/* ---------- compare ---------- */
+.cmp{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);max-width:1056px}
+.cmp-bar{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin-bottom:14px}
+.cmp-bar label{font-size:12px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.cmp h3{font-size:13px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+.cmp ul{list-style:none;margin:0;padding:0}
+.cmp li{border-top:1px solid var(--line);padding:9px 0;font-size:14px}
+.cmp li .k{font-weight:700;color:var(--ink)}
+.cmp li .v{color:var(--ink-2);margin-top:3px}
+.cmp .none{color:var(--muted);font-size:14px;padding:6px 0}
+.tag{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;border-radius:5px;padding:1px 6px;margin-right:6px;vertical-align:1px}
+.tag.add{background:var(--ins);color:var(--ins-ink)} .tag.rem{background:var(--del);color:var(--del-ink)} .tag.chg{background:var(--flag-bg);color:var(--flag)}
+ins{background:var(--ins);color:var(--ins-ink);text-decoration:none;border-radius:3px;padding:0 1px}
+del{background:var(--del);color:var(--del-ink);border-radius:3px;padding:0 1px}
+
+/* ---------- dialogs ---------- */
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);padding:0;width:min(560px,calc(100vw - 32px));box-shadow:0 20px 60px -10px rgba(0,0,0,.4)}
+dialog::backdrop{background:rgba(10,20,30,.45)}
+.dlg{padding:20px 22px}
+.dlg h3{font-size:18px;font-weight:900;margin-bottom:4px}
+.dlg .lead{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+.fl{display:block;font-size:11.5px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+.fi{width:100%;border:1px solid var(--line);background:var(--panel-2);border-radius:8px;padding:9px 11px;font-size:14px;outline:none}
+.fi:focus{border-color:var(--accent)}
+.fh{font-size:12.3px;color:var(--muted);margin-top:4px}
+.dlg-a{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
+.hist{list-style:none;margin:0;padding:0;max-height:60vh;overflow:auto}
+.hist li{border-top:1px solid var(--line);padding:11px 2px;display:flex;gap:12px;justify-content:space-between;align-items:flex-start}
+.hist .hl{font-weight:900}
+.hist .hm{font-size:12.8px;color:var(--muted);margin-top:2px}
+.hist .hn{font-size:13.4px;color:var(--ink-2);margin-top:4px}
+.hist .ha{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex:none}
+.hist .btn{padding:5px 10px;font-size:12.5px}
+ol.steps{margin:6px 0 0;padding-left:20px;font-size:13.4px;color:var(--ink-2)}
+ol.steps li{margin-bottom:4px}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;
+  background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;font-weight:700;transition:.2s;z-index:50;max-width:calc(100vw - 32px)}
+#toast.on{opacity:1;transform:translateX(-50%)}
+
+/* =========================================================
+   THE PAPER (matches the master PDF; always light)
+   1 u = one point of an 11in-wide sheet drawn 1056 units wide.
+   In print the sheet is 11in, so 1u is exactly 1px.
+   ========================================================= */
+.sheets{overflow-x:auto;padding-bottom:6px}
+.sheetwrap{container-type:inline-size;width:100%;max-width:1056px;min-width:760px}
+.ptools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:0 0 7px;font-size:12.5px;color:var(--muted)}
+.ptools .warn{color:var(--bad);font-weight:700}
+.ptools .btn{padding:4px 10px;font-size:12.3px}
+.page{--u:calc(100cqw / 1056);--navy:#15314d;--pmut:#5b6e7c;--pline:#cfd8df;--cat:#e9eff4;--zeb:#f4f8f9;--orng:#ef872d;
+  position:relative;background:#fff;color:#1d2a36;font-family:var(--font);min-height:calc(816 * var(--u));
+  display:flex;flex-direction:column;padding:calc(20 * var(--u)) calc(37 * var(--u)) calc(44 * var(--u));
+  box-shadow:var(--shadow);border-radius:3px;margin-bottom:26px;border-top:calc(8 * var(--u)) solid var(--orng);
+  font-size:calc(10.4 * var(--u));line-height:1.28}
+.page .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:calc(20*var(--u))}
+.page .ph-l{display:flex;gap:calc(17*var(--u));align-items:stretch}
+.page .ph-l .bar{width:calc(5*var(--u));background:var(--navy);flex:none}
+.page h1{font-size:calc(24.7*var(--u));font-weight:900;color:var(--navy);text-transform:uppercase;line-height:1.05;letter-spacing:.005em}
+.page .psub{font-size:calc(11.7*var(--u));color:var(--pmut);margin-top:calc(5*var(--u))}
+.page .ph-r{text-align:right}
+.page .pcode{font-size:calc(10.7*var(--u));font-weight:900;color:var(--navy);text-transform:uppercase;letter-spacing:.02em}
+.page .pver{font-size:calc(9.3*var(--u));color:var(--pmut);text-transform:uppercase;margin-top:calc(6*var(--u));letter-spacing:.02em}
+.page .fields{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(4*var(--u)) calc(26*var(--u));margin-top:calc(16*var(--u))}
+.page .fld{display:flex;align-items:flex-end;gap:calc(9*var(--u));min-height:calc(26*var(--u))}
+.page .fld .fl2{font-size:calc(10.2*var(--u));font-weight:900;color:#3a4c5b;text-transform:uppercase;white-space:nowrap}
+.page .fld .ln{flex:1;border-bottom:1px solid var(--pline);min-width:calc(40*var(--u));height:calc(14*var(--u))}
+.page .instr{display:flex;justify-content:space-between;gap:calc(20*var(--u));margin:calc(16*var(--u)) 0 calc(12*var(--u));font-size:calc(10.8*var(--u))}
+.page .instr i{color:var(--pmut)}
+.page .instr b{color:var(--navy);white-space:nowrap}
+table.rub{width:100%;border-collapse:collapse;table-layout:fixed;border:1px solid var(--pline)}
+table.rub th{background:var(--navy);color:#fff;font-weight:900;padding:calc(6*var(--u)) calc(6*var(--u));text-align:center;vertical-align:middle}
+table.rub th.c0{text-align:left;padding-left:calc(14*var(--u));width:18%}
+table.rub th .n{display:block;font-size:calc(15.5*var(--u));line-height:1.1}
+table.rub th .l{display:block;font-size:calc(8.7*var(--u));text-transform:uppercase;letter-spacing:.02em;margin-top:calc(3*var(--u))}
+table.rub th .ch{display:block;font-size:calc(12*var(--u));text-transform:uppercase}
+table.rub th .cs{display:block;font-size:calc(9.5*var(--u));font-weight:400;margin-top:calc(3*var(--u))}
+table.rub td{border:1px solid var(--pline);vertical-align:top;padding:calc(8*var(--u)) calc(12*var(--u)) calc(6*var(--u));position:relative}
+table.rub tr:nth-child(even) td.lv{background:var(--zeb)}
+table.rub td.cat{background:var(--cat);padding-left:calc(13*var(--u))}
+table.rub td.lv{padding-top:calc(21*var(--u));font-size:calc(10.4*var(--u));color:#24323f}
+table.rub td.lv::after{content:"";position:absolute;top:calc(9*var(--u));right:calc(10*var(--u));width:calc(10*var(--u));height:calc(10*var(--u));
+  border:1px solid #6b7b88;border-radius:50%}
+.cat .ctag{font-size:calc(9.5*var(--u));font-weight:900;color:#2a5a8a;text-transform:uppercase;display:block;margin-bottom:calc(2*var(--u))}
+.cat .cn{font-size:calc(11*var(--u));font-weight:900;color:var(--navy);display:block;line-height:1.2}
+.cat.caps .cn{text-transform:uppercase}
+.cat .cs{font-size:calc(9.4*var(--u));color:var(--pmut);display:block;margin-top:calc(3*var(--u))}
+.cat .wl{border-bottom:1px solid #8a99a6;margin:calc(9*var(--u)) calc(4*var(--u)) 0 0}
+.cat .no{display:flex;align-items:center;gap:calc(5*var(--u));font-size:calc(9*var(--u));color:#3a4c5b;margin-top:calc(10*var(--u))}
+.cat .no::before{content:"";width:calc(9*var(--u));height:calc(9*var(--u));border:1px solid #6b7b88}
+.page .boxes{display:grid;grid-template-columns:1fr 1fr;gap:calc(16*var(--u)) calc(32*var(--u));margin-top:calc(12*var(--u))}
+.page .box .bt2{font-size:calc(10.8*var(--u));font-weight:900;color:#2a5a8a;text-transform:uppercase}
+.page .box .bl{border-bottom:1px solid var(--pline);height:calc(23*var(--u))}
+.page .notes{margin-top:auto;padding-top:calc(14*var(--u))}
+.page .notes .nt{font-size:calc(10.4*var(--u));font-weight:900;color:var(--navy);text-transform:uppercase;margin-bottom:calc(5*var(--u))}
+.page .notes .nl{font-size:calc(9.9*var(--u));color:#33424f;margin-bottom:calc(3*var(--u))}
+.page .notes.plain .nl{color:var(--pmut)}
+.page .pf{position:absolute;right:calc(37*var(--u));bottom:calc(20*var(--u));font-size:calc(9.6*var(--u));color:var(--pmut);text-transform:uppercase;letter-spacing:.02em}
+
+/* editing inside the paper */
+.editing .page [data-path]{outline:1px dashed transparent;border-radius:2px;cursor:text;min-width:1em;display:inline-block}
+.editing .page .cn[data-path],.editing .page .cs[data-path],.editing .page .ctag[data-path],.editing .page .nl[data-path],
+.editing .page td.lv>[data-path]{display:block}
+.editing .page [data-path]:hover{outline-color:#9fb3c4;background:rgba(239,135,45,.06)}
+.editing .page [data-path]:focus{outline:2px solid var(--orng);background:#fff8f0;color:#15212c}
+.editing .page th [data-path]:focus{background:#24486b;color:#fff}
+.editing .page [data-path]:empty::before{content:attr(data-ph);color:#9aa8b4;font-style:italic;font-weight:400}
+.page .ed,.measure .page .ed{display:none}
+.editing .page .ed{display:inline-flex}
+.measure .page [data-path]:empty{display:none}
+.etools{gap:3px;flex-wrap:wrap;margin-top:calc(8*var(--u))}
+.eb{border:1px solid #b9c6d1;background:#fff;color:#2b3e50;border-radius:4px;font-size:11px;line-height:1;padding:3px 6px;cursor:pointer;font-family:var(--font);font-weight:700}
+.eb:hover{border-color:var(--orng);color:#a14e05}
+.eb.x:hover{border-color:#b4372f;color:#b4372f}
+.eb.on{background:#15314d;color:#fff;border-color:#15314d}
+.eadd{margin-top:8px;gap:6px}
+.eadd .eb{padding:5px 10px;font-size:12px}
+.fld .eb.x{padding:2px 5px;margin-left:2px}
+.box .bh{display:flex;gap:6px;align-items:center;justify-content:space-between}
+
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr}
+  aside.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:12px 16px}
+  .sb-list{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+  .sb-list .trk{min-width:190px;border-color:var(--line)}
+  .sb-h{margin:8px 2px 6px}
+  .sb-foot{flex-direction:row;flex-wrap:wrap;gap:4px 16px;margin-top:10px}
+  main{padding:16px 16px 50px}
+  header.site{padding:10px 16px 8px}
+  .brand .sub{display:none}
+}
+
+/* =========================================================
+   PRINT: just the sheets, one per landscape page
+   ========================================================= */
+@page{size:letter landscape;margin:0}
+@media print{
+  html,body{background:#fff!important}
+  header.site,aside.side,.tb,.banner,.ptools,.cmp,.empty,#toast,dialog,.ed{display:none!important}
+  .layout{display:block}
+  main{padding:0}
+  .sheets{overflow:visible;padding:0}
+  .sheetwrap{width:11in;max-width:none;min-width:0}
+  .page{box-shadow:none;border-radius:0;margin:0;height:8.5in;min-height:0;overflow:hidden;break-after:page;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .page:last-child{break-after:auto}
+  .page [data-path]:empty{display:none!important}
+  .editing .page [data-path]{outline:0!important;background:none!important}
+}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="brand">
+    <div class="mark"></div>
+    <div><h1>SOLAR EVALS</h1><div class="sub">Solar Gators / semester review rubric, master and CE versions</div></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="status" id="status" data-s="local" title="Where this page saves"><span class="dot"></span><span id="statusText">This browser only</span></button>
+</header>
+
+<div class="layout">
+  <aside class="side" id="side"></aside>
+  <main id="main"></main>
+</div>
+
+<!-- Save a new version -->
+<dialog id="dSave"><form class="dlg" method="dialog" id="fSave">
+  <h3>Save as a new version</h3>
+  <p class="lead" id="saveLead"></p>
+  <label class="fl" for="sLabel">Version name</label>
+  <input class="fi" id="sLabel" required maxlength="40" autocomplete="off">
+  <div class="fh" id="sLabelHint"></div>
+  <label class="fl" for="sName">Your name</label>
+  <input class="fi" id="sName" required maxlength="60" autocomplete="name">
+  <label class="fl" for="sNote">What changed, and why</label>
+  <textarea class="fi" id="sNote" rows="3" maxlength="600" placeholder="So the next CE knows what you changed and why."></textarea>
+  <div class="dlg-a"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok" id="sOk">Save version</button></div>
+</form></dialog>
+
+<!-- History -->
+<dialog id="dHist"><div class="dlg">
+  <h3 id="histTitle">History</h3>
+  <p class="lead">Every saved version is kept. Nothing here is ever overwritten.</p>
+  <ul class="hist" id="histList"></ul>
+  <div class="dlg-a"><button class="btn" data-close>Close</button></div>
+</div></dialog>
+
+<!-- New division -->
+<dialog id="dTrack"><form class="dlg" method="dialog" id="fTrack">
+  <h3 id="trackTitle">Add a division</h3>
+  <p class="lead" id="trackLead">For a CE role or division that isn't listed yet. It starts with no versions.</p>
+  <label class="fl" for="tName">Name</label>
+  <input class="fi" id="tName" required maxlength="50" placeholder="e.g. Strategy CE" autocomplete="off">
+  <label class="fl" for="tColor">Colour</label>
+  <input class="fi" id="tColor" type="color" value="#5b6e7c" style="height:42px;padding:4px">
+  <div class="dlg-a"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save</button></div>
+</form></dialog>
+
+<!-- Sharing -->
+<dialog id="dConn"><form class="dlg" method="dialog" id="fConn">
+  <h3>Where versions are saved</h3>
+  <p class="lead">Versions are saved to one file in a Solar Gators GitHub repository, so the next CEs see them. Every save is also a commit, so GitHub keeps its own history too.</p>
+  <div id="connState" class="banner note" style="margin:0 0 6px"></div>
+  <label class="fl" for="cRepo">Repository</label>
+  <input class="fi" id="cRepo" placeholder="Solar-Gators/Solar-Evals" autocomplete="off" spellcheck="false">
+  <label class="fl" for="cPath">File in the repository</label>
+  <input class="fi" id="cPath" placeholder="rubrics.json" autocomplete="off" spellcheck="false">
+  <label class="fl" for="cBranch">Branch</label>
+  <input class="fi" id="cBranch" placeholder="Leave blank for the default branch" autocomplete="off" spellcheck="false">
+  <label class="fl" for="cToken">Your GitHub token</label>
+  <input class="fi" id="cToken" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
+  <div class="fh">Only needed to save. Anyone can look at versions without one (if the repository is public). The token stays in this browser and is never written into the page or the repository.</div>
+  <details style="margin-top:10px;font-size:13.4px">
+    <summary style="cursor:pointer;font-weight:700">How to make a token (about five minutes, once)</summary>
+    <ol class="steps">
+      <li>Go to <b>github.com/settings/personal-access-tokens/new</b>.</li>
+      <li>Name it <code>Solar Evals</code>; set it to expire at the end of the semester.</li>
+      <li><b>Resource owner:</b> <code>Solar-Gators</code>.</li>
+      <li><b>Repository access:</b> Only select repositories, then pick the repository above.</li>
+      <li><b>Permissions → Repositories → Contents:</b> Read and write.</li>
+      <li>Generate it, copy it (starts with <code>github_pat_</code>) and paste it above.</li>
+    </ol>
+  </details>
+  <div class="dlg-a">
+    <button class="btn danger" value="local" formnovalidate>Use this browser only</button>
+    <button class="btn" value="cancel" formnovalidate>Cancel</button>
+    <button class="btn primary" value="ok">Connect</button>
+  </div>
+</form></dialog>
+
+<!-- Start from another version -->
+<dialog id="dPick"><form class="dlg" method="dialog">
+  <h3>Start from another version</h3>
+  <p class="lead">Your new version begins as a copy of the one you pick. The one you copy is not changed.</p>
+  <label class="fl" for="pSel">Copy</label>
+  <select class="fi" id="pSel"></select>
+  <div class="dlg-a"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Start</button></div>
+</form></dialog>
+
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+<div id="toast" role="status"></div>
+
+<script>
+"use strict";
+/* =========================================================
+   THE MASTER TEMPLATE, v1.0
+   Taken word for word from the master PDF. It is the seed
+   that every new CE version starts from, and it can never be
+   lost: if the saved data is missing it, it is put back.
+   ========================================================= */
+const LV_CE  = ["Does not meet core competency standards or progress expectations.","Partially meets standards; needs repeated intervention.","Meets the agreed competency and quality standards.","Exceeds standards through strong, independent execution.","Demonstrates exceptional competence and meaningfully improves division outcomes."];
+const LV_SUB = ["Makes little usable progress on agreed deliverables.","Makes partial progress; important outcomes remain incomplete.","Completes agreed deliverables to the defined standard.","Exceeds deliverables or materially accelerates subsystem progress.","Delivers exceptional results with lasting subsystem impact."];
+
+const MASTER_V1 = {
+  title: "Solar Evals",
+  catHead: "Category",
+  catSub: "Behavioral expectations",
+  scale: ["Unsatisfactory","Below expectations","Meets expectations","Exceeds expectations","Exceptional"],
+  pages: [
+    {
+      id: "universal",
+      name: "Universal rubric",
+      subtitle: "Solar Gators  /  Semester performance review",
+      fields: ["Member","Semester","CE division","Subsystem","Subsystem lead","Evaluating CE"],
+      instruction: "Circle one rating in each row.  A 3 means the member fully meets expectations for their role and experience.",
+      legend: "N/O = Not observed / not applicable",
+      capsNames: true,
+      criteria: [
+        {id:"communication", tag:"", name:"Communication", sub:"Progress, blockers, coordination", writeIn:false, levels:[
+          "Fails to share critical updates, repeatedly delaying others.","Gives sporadic updates; teammates must repeatedly request information.","Shares progress, blockers, and schedule changes promptly and clearly.","Anticipates information needs and coordinates before issues disrupt work.","Improves team communication practices and prevents recurring disconnects."]},
+        {id:"reliability", tag:"", name:"Reliability & accountability", sub:"Follow-through and accountability", writeIn:false, levels:[
+          "Frequently leaves agreed work unfinished without accountability.","Misses commitments or needs repeated reminders to finish work.","Completes agreed work or flags risks and renegotiates deadlines early.","Dependably delivers, anticipates obstacles, and takes corrective action.","Sustains exceptional follow-through and strengthens critical team execution."]},
+        {id:"attendance", tag:"", name:"Attendance & participation", sub:"Agreed sessions and engagement", writeIn:false, levels:[
+          "Regularly misses agreed sessions without timely notice.","Attendance or engagement often falls below agreed expectations.","Meets agreed participation expectations or communicates conflicts early.","Consistently engaged; makes valuable contributions during team activities.","Enables productive work sessions and helps others participate effectively."]},
+        {id:"technical", tag:"", name:"Technical ability & work quality", sub:"Judgment, execution, verification", writeIn:false, levels:[
+          "Work often misses basic requirements or needs extensive correction.","Applies fundamentals unevenly; work often needs guidance or rework.","Uses role-appropriate skills and checks work against requirements.","Handles challenging work independently with consistently strong results.","Applies exceptional judgment and elevates team-wide technical quality."]},
+        {id:"initiative", tag:"", name:"Initiative & ownership", sub:"Self-direction and problem-solving", writeIn:false, levels:[
+          "Rarely progresses work without repeated direction.","Waits for instructions to address routine next steps or blockers.","Advances assigned work independently and raises blockers when needed.","Identifies needed work and drives solutions beyond assigned scope.","Proactively leads high-impact improvements through to results."]},
+        {id:"learning", tag:"", name:"Learning & development", sub:"Feedback, curiosity, skill growth", writeIn:false, levels:[
+          "Makes little effort to develop essential skills or act on feedback.","Learning is inconsistent; similar gaps persist after feedback.","Seeks help appropriately, uses feedback, and builds expected skills.","Pursues new skills independently and applies them effectively.","Shows exceptional growth and shares knowledge that lifts the team."]}
+      ],
+      boxes: [],
+      notesTitle: "Scoring principles",
+      notes: [
+        "Use specific examples for 1, 2, 4, or 5. Evaluate agreed commitments, not raw hours or willingness to work excessive shifts.",
+        "Safety concerns are addressed separately; do not reduce them to a numerical performance rating."
+      ],
+      footer: "Solar Gators  •  Semester member development"
+    },
+    {
+      id: "specialized",
+      name: "Specialized + feedback",
+      subtitle: "Specialized expectations, evidence and next-semester development",
+      fields: ["Member","Semester","Review date"],
+      instruction: "CE and subsystem expectations should be agreed upon at the start of the semester; mark unused categories N/O.",
+      legend: "",
+      capsNames: false,
+      criteria: [
+        {id:"ce-1",  tag:"CE-specific", name:"Criterion 1", sub:"", writeIn:true, levels:LV_CE.slice()},
+        {id:"ce-2",  tag:"CE-specific", name:"Criterion 2", sub:"", writeIn:true, levels:LV_CE.slice()},
+        {id:"sub-1", tag:"Subsystem-specific", name:"Goal / skill 1", sub:"", writeIn:true, levels:LV_SUB.slice()},
+        {id:"sub-2", tag:"Subsystem-specific", name:"Goal / skill 2  (optional)", sub:"", writeIn:true, levels:LV_SUB.slice()}
+      ],
+      boxes: [
+        {id:"evidence",    title:"Notable contributions / evidence", lines:4},
+        {id:"goals",       title:"Agreed goals for next semester",   lines:4},
+        {id:"improvement", title:"Areas for improvement",            lines:2},
+        {id:"comments",    title:"Member comments / context",        lines:2}
+      ],
+      notesTitle: "",
+      notes: [
+        "3 = Meets expectations.  Scores of 4 or 5 require specific evidence; no one needs to hold a leadership role to earn a 5.",
+        "N/O = insufficient evidence or criterion not assigned.  Serious safety issues require separate action."
+      ],
+      footer: "Solar Gators"
+    }
+  ]
+};
+
+/* The divisions listed on the left. Colours match the CE Scope Map. */
+const SEED_TRACKS = [
+  {id:"master",     name:"Master template",      kind:"master", color:"#15314d"},
+  {id:"aero",       name:"Aero / Structures CE", kind:"ce",     color:"#1F7A6B"},
+  {id:"vd",         name:"Vehicle Dynamics CE",  kind:"ce",     color:"#C2622A"},
+  {id:"powertrain", name:"Powertrain CE",        kind:"ce",     color:"#8A3F7A"},
+  {id:"electrical", name:"Electrical CE",        kind:"ce",     color:"#2F5FA8"}
+];
+const SEED_VERSION = {id:"master-v1-0", trackId:"master", label:"v1.0", author:"Solar Gators", savedAt:"",
+  note:"The original master rubric.", basedOn:null, rubric:MASTER_V1};
+
+const DEFAULT_CONN = {repo:"Solar-Gators/Solar-Evals", path:"rubrics.json", branch:"", token:""};
+const LS = {db:"sg-evals-db", conn:"sg-evals-conn", name:"sg-evals-name", draft:"sg-evals-draft"};
+
+/* =========================================================
+   SMALL HELPERS
+   ========================================================= */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const uid = () => (Date.now().toString(36) + Math.random().toString(36).slice(2, 8));
+const lsGet = (k, d=null) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } };
+const lsSet = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } };
+const fmtDate = iso => iso ? new Date(iso).toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"}) : "";
+const PLAIN = (() => { const d = document.createElement("div"); d.contentEditable = "plaintext-only"; return d.contentEditable === "plaintext-only"; })();
+let toastT;
+function toast(msg, ms=3200){ const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), ms); }
+
+function semesterNow(){
+  const d = new Date(), m = d.getMonth(), y = d.getFullYear();
+  return (m <= 4 ? "Spring " : m <= 6 ? "Summer " : "Fall ") + y;
+}
+function nextMasterLabel(){
+  const l = latest("master")?.label || "v1.0";
+  const m = l.match(/(\d+)\.(\d+)/);
+  return m ? `v${m[1]}.${+m[2] + 1}` : l + " (new)";
+}
+
+/* =========================================================
+   DATA
+   db = { app, schema, tracks:[...], versions:[...] }
+   Versions are never edited or removed once saved, which is
+   what lets two CEs save at the same time without clashing.
+   ========================================================= */
+function emptyDb(){ return {app:"solar-evals", schema:1, tracks:[], versions:[], removed:[]}; }
+function normalize(d){
+  d = d && typeof d === "object" ? d : emptyDb();
+  d.app = "solar-evals"; d.schema = 1;
+  d.tracks = Array.isArray(d.tracks) ? d.tracks.filter(t => t && t.id) : [];
+  d.removed = [...new Set(Array.isArray(d.removed) ? d.removed : [])].filter(id => id !== SEED_VERSION.id).sort();
+  const gone = new Set(d.removed);
+  d.versions = Array.isArray(d.versions) ? d.versions.filter(v => v && v.id && v.trackId && v.rubric && !gone.has(v.id)) : [];
+  SEED_TRACKS.forEach(s => { if (!d.tracks.some(t => t.id === s.id)) d.tracks.push({...s, createdAt:"", updatedAt:0}); });
+  if (!d.versions.some(v => v.id === SEED_VERSION.id)) d.versions.push(clone(SEED_VERSION));
+  const seedIx = id => { const i = SEED_TRACKS.findIndex(s => s.id === id); return i < 0 ? 99 : i; };
+  d.tracks.sort((a, b) => seedIx(a.id) - seedIx(b.id) || String(a.createdAt).localeCompare(String(b.createdAt)) || a.id.localeCompare(b.id));
+  d.versions.sort((a, b) => String(a.savedAt).localeCompare(String(b.savedAt)) || a.id.localeCompare(b.id));
+  return d;
+}
+function merge(a, b){
+  const tracks = {}, versions = {};
+  [...(a?.tracks || []), ...(b?.tracks || [])].forEach(t => { if (!tracks[t.id] || (t.updatedAt || 0) > (tracks[t.id].updatedAt || 0)) tracks[t.id] = t; });
+  [...(a?.versions || []), ...(b?.versions || [])].forEach(v => { if (!versions[v.id]) versions[v.id] = v; });
+  // "removed" lists versions someone took out, so a stale copy in another browser can't bring them back.
+  return normalize({tracks:Object.values(tracks), versions:Object.values(versions), removed:[...(a?.removed || []), ...(b?.removed || [])]});
+}
+const track = id => db.tracks.find(t => t.id === id);
+const version = id => db.versions.find(v => v.id === id);
+const versionsOf = id => db.versions.filter(v => v.trackId === id);
+const latest = id => { const v = versionsOf(id); return v[v.length - 1]; };
+function vName(v){ if (!v) return ""; const t = track(v.trackId); return `${t ? t.name : "?"} · ${v.label}`; }
+/* Which master version a version ultimately came from. */
+function masterRoot(v){
+  const seen = new Set();
+  while (v && !seen.has(v.id)) { if (v.trackId === "master") return v; seen.add(v.id); v = v.basedOn && version(v.basedOn.versionId); }
+  return null;
+}
+
+let db = normalize(lsGet(LS.db));
+function persist(){ lsSet(LS.db, db); }
+
+/* =========================================================
+   SAVING TO GITHUB
+   One JSON file in a repository, read and written with the
+   contents API. Saving always re-reads the file first and
+   merges, so a teammate's save is never lost.
+   ========================================================= */
+let conn = lsGet(LS.conn) || {...DEFAULT_CONN};     // {localOnly:true} = never share
+let sync = {s:"local", msg:"", sha:null};
+
+function b64enc(str){ const bytes = new TextEncoder().encode(str); let bin = ""; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); }
+function b64dec(b64){ const bin = atob(String(b64).replace(/\s/g, "")); const bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); return new TextDecoder().decode(bytes); }
+const sharing = () => !conn.localOnly && !!conn.repo && !!conn.path;
+function ghUrl(){ const p = conn.path.split("/").map(encodeURIComponent).join("/"); return `https://api.github.com/repos/${conn.repo}/contents/${p}`; }
+function ghHeaders(json){ const h = {Accept:"application/vnd.github+json"}; if (conn.token) h.Authorization = `Bearer ${conn.token}`; if (json) h["Content-Type"] = "application/json"; return h; }
+async function ghError(r){ let m = ""; try { m = (await r.json()).message || ""; } catch {} const e = new Error(`GitHub said ${r.status}${m ? ": " + m : ""}`); e.status = r.status; return e; }
+
+async function pull(){
+  const q = new URLSearchParams({t:Date.now()}); if (conn.branch) q.set("ref", conn.branch);
+  const r = await fetch(`${ghUrl()}?${q}`, {headers:ghHeaders(), cache:"no-store"});
+  if (r.status === 404) return {missing:true};
+  if (!r.ok) throw await ghError(r);
+  const j = await r.json();
+  let content = j.content;
+  if (!content && j.git_url) {                       // files over 1 MB come back empty; fetch the blob instead
+    const b = await fetch(j.git_url, {headers:ghHeaders(), cache:"no-store"});
+    if (!b.ok) throw await ghError(b);
+    content = (await b.json()).content;
+  }
+  let data; try { data = JSON.parse(b64dec(content || "")); } catch { throw new Error(`${conn.path} in ${conn.repo} isn't a Solar Evals file.`); }
+  return {sha:j.sha, db:normalize(data)};
+}
+async function push(data, sha, message){
+  const body = {message, content:b64enc(JSON.stringify(data, null, 1) + "\n")};
+  if (sha) body.sha = sha;
+  if (conn.branch) body.branch = conn.branch;
+  const r = await fetch(ghUrl(), {method:"PUT", headers:ghHeaders(true), body:JSON.stringify(body)});
+  if (r.status === 409 || r.status === 422) return {conflict:true, err:await ghError(r)};
+  if (!r.ok) throw await ghError(r);
+  return {sha:(await r.json()).content.sha};
+}
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+function setSync(s, msg=""){ sync.s = s; sync.msg = msg; renderStatus(); }
+let syncing = false;
+/* Bring in teammates' saves, and upload anything of ours that isn't there yet. */
+async function syncNow({quiet=false} = {}){
+  if (!sharing()) { setSync("local"); return; }
+  if (syncing) return; syncing = true;
+  if (!quiet) setSync("saving", "Checking…");
+  try {
+    const remote = await pull();
+    if (remote.missing) {
+      setSync("missing", conn.token ? `${conn.path} isn't in ${conn.repo} yet. It will be created when you save a version.`
+                                    : `Couldn't find ${conn.repo}. It may not exist yet, or it's private and needs a token.`);
+      return;
+    }
+    sync.sha = remote.sha;
+    const before = JSON.stringify(db);
+    const merged = merge(remote.db, db);
+    db = merged; persist();
+    if (!same(merged, remote.db) && conn.token) {
+      const r = await push(merged, remote.sha, "Solar Evals: upload versions saved while offline");
+      if (!r.conflict) sync.sha = r.sha;
+    }
+    if (JSON.stringify(db) !== before) { renderSide(); if (view.mode !== "edit") renderMain(); }
+    const pending = !same(merged, remote.db) && !conn.token;
+    setSync(conn.token ? "ok" : "readonly", pending ? "Some versions here aren't shared yet: add a token to upload them." : "");
+  } catch (e) {
+    setSync("error", e.status === 401 ? "GitHub didn't accept the token. It may have expired." : (e.message || String(e)));
+  } finally { syncing = false; }
+}
+/* Save the local db to GitHub (after adding a version). Retries if a teammate saved at the same moment. */
+async function commit(message){
+  persist();
+  if (!sharing()) { setSync("local"); toast("Saved in this browser only. Connect to GitHub so other CEs can see it."); return false; }
+  if (!conn.token) { setSync("readonly", "Saved in this browser only: add a token to share it."); toast("Saved in this browser only. Add a GitHub token to share it."); return false; }
+  setSync("saving", "Saving…");
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      const remote = await pull();
+      const merged = merge(remote.missing ? emptyDb() : remote.db, db);
+      const r = await push(merged, remote.missing ? null : remote.sha, message);
+      if (r.conflict) { if (attempt === 3) throw r.err; continue; }
+      db = merged; sync.sha = r.sha; persist(); setSync("ok"); renderSide();
+      return true;
+    } catch (e) {
+      setSync("error", e.status === 401 ? "GitHub didn't accept the token. It may have expired." : (e.message || String(e)));
+      toast("Couldn't reach GitHub. It's kept in this browser and will upload on the next check.", 4500);
+      return false;
+    }
+  }
+}
+setInterval(() => { if (sharing() && document.visibilityState === "visible") syncNow({quiet:true}); }, 45000);
+document.addEventListener("visibilitychange", () => { if (sharing() && document.visibilityState === "visible") syncNow({quiet:true}); });
+
+function renderStatus(){
+  const el = $("#status"), txt = $("#statusText");
+  el.dataset.s = sync.s;
+  txt.textContent = {local:"This browser only", ok:"Shared · up to date", saving:sync.msg || "Saving…",
+    readonly:"Shared · view only", missing:"Shared copy not found", error:"Not saved to GitHub"}[sync.s] || "";
+  el.title = sync.msg || (sharing() ? `Saving to ${conn.repo} / ${conn.path}` : "Only in this browser");
+}
+
+/* =========================================================
+   VIEW STATE
+   ========================================================= */
+let view = {trackId:"master", versionId:null, mode:"view", cmpA:null, cmpB:null};
+let draft = lsGet(LS.draft);   // {trackId, baseId, rubric}
+function saveDraft(){ lsSet(LS.draft, draft); }
+let draftT; function saveDraftSoon(){ clearTimeout(draftT); draftT = setTimeout(saveDraft, 400); }
+
+function go(trackId, versionId=null, mode="view"){
+  view.trackId = track(trackId) ? trackId : "master";
+  view.versionId = versionId && version(versionId)?.trackId === view.trackId ? versionId : null;
+  view.mode = mode;
+  const h = "#/" + view.trackId + (view.versionId ? "/" + view.versionId : "");
+  if (location.hash !== h) history.replaceState(null, "", h);
+  render();
+  window.scrollTo({top:0});
+}
+function fromHash(){
+  const [, t, v] = location.hash.split("/");
+  go(t || "master", v || null);
+}
+window.addEventListener("hashchange", fromHash);
+
+const shownVersion = () => view.versionId ? version(view.versionId) : latest(view.trackId);
+
+/* =========================================================
+   RENDERING
+   ========================================================= */
+function render(){ renderSide(); renderMain(); renderStatus(); }
+
+function renderSide(){
+  const item = t => {
+    const vs = versionsOf(t.id), l = vs[vs.length - 1];
+    const meta = l ? `${esc(l.label)} · ${vs.length} version${vs.length === 1 ? "" : "s"}` : "No version yet";
+    return `<button class="trk${t.id === view.trackId ? " on" : ""}" data-act="track" data-id="${esc(t.id)}" style="--c:${esc(t.color || "#888")}">
+      <span class="sw"></span><span><span class="nm">${esc(t.name)}</span>${draft && draft.trackId === t.id ? '<span class="badge">Draft</span>' : ""}
+      <span class="mt" style="display:block">${meta}</span></span></button>`;
+  };
+  const ces = db.tracks.filter(t => t.kind !== "master");
+  $("#side").innerHTML = `
+    <div class="sb-h">Template</div><div class="sb-list">${item(track("master"))}</div>
+    <div class="sb-h">CE versions</div><div class="sb-list">${ces.map(item).join("")}</div>
+    <div class="sb-foot">
+      <button class="linkbtn" data-act="addTrack">+ Add a division</button>
+      <button class="linkbtn" data-act="compareAny">Compare any two versions</button>
+      <button class="linkbtn" data-act="export">Download all data (.json)</button>
+      <button class="linkbtn" data-act="import">Load data (.json)</button>
+    </div>`;
+}
+
+function renderMain(){
+  const m = $("#main"), t = track(view.trackId);
+  m.classList.toggle("editing", view.mode === "edit");
+  if (view.mode === "compare") { m.innerHTML = compareHTML(); return; }
+  if (view.mode === "edit" && draft && draft.trackId === t.id) { m.innerHTML = editHTML(t); afterPages(); return; }
+  if (view.mode === "edit") view.mode = "view";
+
+  const v = shownVersion(), vs = versionsOf(t.id), isLatest = v && v === vs[vs.length - 1];
+  let h = "";
+  if (!v) {
+    h += toolbarHTML(t, `<div class="meta">No one has saved a version for this division yet.</div>`, "");
+    h += draftBanner(t);
+    h += `<div class="empty"><h3>Start the first ${esc(t.name)} version</h3>
+      <p>It begins as a copy of the master template. Fill in your CE-specific criteria and subsystem goals, then save it for the next CEs.</p>
+      <div class="row"><button class="btn primary" data-act="startFrom" data-id="${esc(latest("master").id)}">Start from master ${esc(latest("master").label)}</button>
+      <button class="btn" data-act="startOther">Start from another CE's version</button></div></div>`;
+    m.innerHTML = h; return;
+  }
+  const based = v.basedOn && version(v.basedOn.versionId);
+  const meta = `<div class="meta"><b>${esc(v.label)}</b>${isLatest ? " (latest)" : " (older version)"}
+     · ${v.savedAt ? `saved by <b>${esc(v.author)}</b> on ${fmtDate(v.savedAt)}` : esc(v.author)}
+     ${based ? ` · based on ${esc(vName(based))}` : ""}${v.note ? `<br>“${esc(v.note)}”` : ""}</div>`;
+  const sel = `<select class="sel" data-act="pickVersion" aria-label="Version">${vs.slice().reverse().map(x =>
+     `<option value="${esc(x.id)}"${x === v ? " selected" : ""}>${esc(x.label)}${x === vs[vs.length - 1] ? " (latest)" : ""}${x.savedAt ? " · " + fmtDate(x.savedAt) : ""}</option>`).join("")}</select>`;
+  const acts = `${sel}
+     <button class="btn primary" data-act="startFrom" data-id="${esc(v.id)}">${isLatest ? "Make a new version" : "New version from this one"}</button>
+     <button class="btn" data-act="history">History</button>
+     <button class="btn" data-act="compare">Compare</button>
+     <button class="btn" data-act="print">Print / PDF</button>
+     ${t.kind !== "master" ? `<button class="btn" data-act="renameTrack" title="Rename this division">Rename</button>` : ""}`;
+  h += toolbarHTML(t, meta, acts);
+  h += draftBanner(t);
+  if (!isLatest) h += `<div class="banner note"><span class="bt">You're looking at an older version. The latest is <b>${esc(vs[vs.length - 1].label)}</b>.</span>
+     <button class="btn" data-act="pickLatest">Show latest</button></div>`;
+  if (t.kind !== "master") {
+    const root = masterRoot(v), ml = latest("master");
+    if (root && root.id !== ml.id && isLatest) h += `<div class="banner note"><span class="bt">The master template has changed since this version was made
+       (<b>${esc(root.label)}</b> → <b>${esc(ml.label)}</b>).</span><button class="btn" data-act="cmpPair" data-a="${esc(root.id)}" data-b="${esc(ml.id)}">See what changed</button></div>`;
+  }
+  if (t.kind === "master") h += `<div class="banner note"><span class="bt">This is the <b>general template</b> every CE version starts from. CE-specific changes belong in a CE version on the left.</span></div>`;
+  h += `<div class="sheets"><div class="sheetwrap">${pagesHTML(v.rubric, {editing:false, track:t, label:v.label})}</div></div>`;
+  m.innerHTML = h; afterPages();
+}
+
+function toolbarHTML(t, meta, acts){
+  return `<div class="tb"><div class="tb-t" style="--c:${esc(t.color || "#888")}"><h2>${esc(t.name)}</h2>${meta}</div><div class="tb-a">${acts}</div></div>`;
+}
+function draftBanner(t){
+  if (!draft || draft.trackId !== t.id) return "";
+  const b = version(draft.baseId);
+  return `<div class="banner"><span class="bt">You have an <b>unsaved draft</b> here${b ? ` (started from ${esc(vName(b))})` : ""}.</span>
+    <span class="tb-a"><button class="btn" data-act="discard">Discard</button><button class="btn primary" data-act="resume">Keep editing</button></span></div>`;
+}
+
+function editHTML(t){
+  const b = version(draft.baseId);
+  const meta = `<div class="meta"><b>Draft</b>, not saved yet${b ? ` · started from ${esc(vName(b))}` : ""}. Click any text on the pages to change it.</div>`;
+  const acts = `<button class="btn" data-act="discard">Discard draft</button>
+    <button class="btn" data-act="cmpDraft">Compare with ${b ? esc(b.label) : "start"}</button>
+    <button class="btn primary" data-act="openSave">Save as new version</button>`;
+  return toolbarHTML(t, meta, acts) +
+    (t.kind === "master" ? `<div class="banner note"><span class="bt">You're editing the <b>master template</b>. New CE versions will start from what you save here. Existing CE versions are not changed.</span></div>` : "") +
+    `<div class="sheets"><div class="sheetwrap">${pagesHTML(draft.rubric, {editing:true, track:t, label:"Draft"})}</div></div>`;
+}
+
+/* One rubric → its printed pages. In edit mode, text becomes editable and small tools appear. */
+function pagesHTML(r, {editing, track:t, label}){
+  const E = (path, val, ph="", tag="span", cls="") => editing
+    ? `<${tag} class="${cls}" data-path="${path}" data-ph="${esc(ph)}" contenteditable="${PLAIN ? "plaintext-only" : "true"}" spellcheck="true">${esc(val)}</${tag}>`
+    : `<${tag} class="${cls}">${esc(val)}</${tag}>`;
+  const B = (act, txt, attrs="", cls="") => `<button class="eb ${cls}" data-act="${act}" ${attrs} type="button">${txt}</button>`;
+  const who = (t.kind === "master" ? "Master template" : t.name);
+  const n = r.pages.length;
+  return r.pages.map((p, pi) => {
+    const fields = p.fields.map((f, fi) => `<div class="fld">${E(`pages.${pi}.fields.${fi}`, f, "Field", "span", "fl2")}
+        ${editing ? B("delField", "✕", `data-pi="${pi}" data-i="${fi}" title="Remove field"`, "x ed") : ""}<span class="ln"></span></div>`).join("");
+    const head = `<tr><th class="c0">${E("catHead", r.catHead, "Category", "span", "ch")}${E("catSub", r.catSub, "", "span", "cs")}</th>${
+      r.scale.map((s, si) => `<th><span class="n">${si + 1}</span>${E(`scale.${si}`, s, "Label", "span", "l")}</th>`).join("")}</tr>`;
+    const rows = p.criteria.map((c, ci) => {
+      const tools = editing ? `<span class="ed etools">
+          ${B("moveCrit", "↑", `data-pi="${pi}" data-i="${ci}" data-d="-1" title="Move up"`)}${B("moveCrit", "↓", `data-pi="${pi}" data-i="${ci}" data-d="1" title="Move down"`)}
+          ${B("dupCrit", "Copy", `data-pi="${pi}" data-i="${ci}" title="Duplicate this row"`)}
+          ${B("lineCrit", "Write-in line", `data-pi="${pi}" data-i="${ci}" title="Show a blank line to write the criterion by hand"`, c.writeIn ? "on" : "")}
+          ${B("delCrit", "✕", `data-pi="${pi}" data-i="${ci}" title="Remove this row"`, "x")}</span>` : "";
+      return `<tr><td class="cat${p.capsNames ? " caps" : ""}">
+          ${(c.tag || editing) ? E(`pages.${pi}.criteria.${ci}.tag`, c.tag, "Tag (optional)", "span", "ctag") : ""}
+          ${E(`pages.${pi}.criteria.${ci}.name`, c.name, "Criterion name", "span", "cn")}
+          ${(c.sub || editing) ? E(`pages.${pi}.criteria.${ci}.sub`, c.sub, "Short description (optional)", "span", "cs") : ""}
+          ${c.writeIn ? '<div class="wl"></div>' : ""}<span class="no">N/O</span>${tools}</td>
+        ${c.levels.map((l, li) => `<td class="lv">${E(`pages.${pi}.criteria.${ci}.levels.${li}`, l, "What a " + (li + 1) + " looks like", "span")}</td>`).join("")}</tr>`;
+    }).join("");
+    const boxes = (p.boxes.length || editing) ? `<div class="boxes">${p.boxes.map((b, bi) => `<div class="box"><div class="bh">${E(`pages.${pi}.boxes.${bi}.title`, b.title, "Box title", "span", "bt2")}
+        ${editing ? `<span class="ed" style="gap:3px">${B("boxLines", "− line", `data-pi="${pi}" data-i="${bi}" data-d="-1"`)}${B("boxLines", "+ line", `data-pi="${pi}" data-i="${bi}" data-d="1"`)}${B("delBox", "✕", `data-pi="${pi}" data-i="${bi}" title="Remove box"`, "x")}</span>` : ""}</div>
+        ${'<div class="bl"></div>'.repeat(Math.max(1, b.lines | 0))}</div>`).join("")}</div>` : "";
+    const notes = (p.notes.length || p.notesTitle || editing) ? `<div class="notes${p.notesTitle ? "" : " plain"}">
+        ${(p.notesTitle || editing) ? E(`pages.${pi}.notesTitle`, p.notesTitle, "Notes heading (optional)", "div", "nt") : ""}
+        ${p.notes.map((x, ni) => `<div style="display:flex;gap:6px;align-items:flex-start">${E(`pages.${pi}.notes.${ni}`, x, "Note", "div", "nl")}${editing ? B("delNote", "✕", `data-pi="${pi}" data-i="${ni}" title="Remove note"`, "x ed") : ""}</div>`).join("")}
+        ${editing ? `<span class="ed eadd">${B("addNote", "+ Note", `data-pi="${pi}"`)}</span>` : ""}</div>` : "";
+    const ptools = `<div class="ptools"><span>Page ${pi + 1} of ${n}<span class="warn" data-over="${pi}" hidden> · Too long for one printed page</span></span>${
+      editing && t.kind !== "master" ? `<button class="btn" data-act="resetPage" data-pi="${pi}" title="Replace this page with the latest master template's version of it">Reset page to master ${esc(latest("master").label)}</button>` : ""}</div>`;
+    return `${ptools}<section class="page" data-page="${pi}">
+      <div class="ph"><div class="ph-l"><div class="bar"></div><div>${E("title", r.title, "Title", "h1")}${E(`pages.${pi}.subtitle`, p.subtitle, "Subtitle", "div", "psub")}</div></div>
+        <div class="ph-r"><div class="pcode">${String(pi + 1).padStart(2, "0")}&nbsp; / &nbsp;${E(`pages.${pi}.name`, p.name, "Page name")}</div>
+        <div class="pver">${esc(who)} &nbsp;|&nbsp; <span style="text-transform:none">${esc(label)}</span></div></div></div>
+      <div class="fields">${fields}${editing ? `<div class="fld ed eadd">${B("addField", "+ Field", `data-pi="${pi}"`)}</div>` : ""}</div>
+      ${(p.instruction || p.legend || editing) ? `<div class="instr">${E(`pages.${pi}.instruction`, p.instruction, "Instructions (optional)", "i")}${E(`pages.${pi}.legend`, p.legend, "Legend (optional)", "b")}</div>` : ""}
+      <table class="rub"><thead>${head}</thead><tbody>${rows}</tbody></table>
+      ${editing ? `<span class="ed eadd">${B("addCrit", "+ Criterion row", `data-pi="${pi}"`)}${p.boxes.length ? "" : B("addBox", "+ Feedback box", `data-pi="${pi}"`)}</span>` : ""}
+      ${boxes}
+      ${editing && p.boxes.length ? `<span class="ed eadd">${B("addBox", "+ Feedback box", `data-pi="${pi}"`)}</span>` : ""}
+      ${notes}
+      <div class="pf">${esc(p.footer)}${p.footer ? " &nbsp;|&nbsp; " : ""}Page ${pi + 1} / ${n}</div>
+    </section>`;
+  }).join("");
+}
+/* Flag pages that won't fit on one printed sheet. */
+function afterPages(){
+  requestAnimationFrame(() => {
+    const m = $("#main"), ed = m.classList.contains("editing");
+    if (ed) m.classList.replace("editing", "measure");   // measure without edit buttons or empty fields, as it will print
+    $$(".page").forEach(pg => {
+      const u = pg.getBoundingClientRect().width / 1056;
+      const w = $(`[data-over="${pg.dataset.page}"]`);
+      pg.style.minHeight = "0";                        // the content's own height, not the sheet's minimum
+      const h = pg.offsetHeight;
+      pg.style.minHeight = "";
+      if (w) w.hidden = !(h > 816 * u + 2);
+    });
+    if (ed) m.classList.replace("measure", "editing");
+  });
+}
+window.addEventListener("resize", afterPages);
+
+/* =========================================================
+   EDITING
+   ========================================================= */
+function getPath(o, path){ return path.split(".").reduce((x, k) => x == null ? x : x[k], o); }
+function setPath(o, path, val){ const ks = path.split("."); const last = ks.pop(); const p = ks.reduce((x, k) => x[k], o); p[last] = val; }
+
+$("#main").addEventListener("input", e => {
+  const el = e.target.closest("[data-path]"); if (!el || !draft) return;
+  const val = el.textContent.replace(/\n+/g, " ");   // not innerText: that returns the CSS capitals
+  setPath(draft.rubric, el.dataset.path, val);
+  $$(`[data-path="${el.dataset.path}"]`).forEach(o => { if (o !== el) o.textContent = val; });   // title / scale appear on every page
+  saveDraftSoon(); afterPages();
+});
+$("#main").addEventListener("keydown", e => {
+  if (e.target.closest("[data-path]") && e.key === "Enter") { e.preventDefault(); e.target.blur(); }
+});
+$("#main").addEventListener("paste", e => {
+  if (PLAIN || !e.target.closest("[data-path]")) return;
+  e.preventDefault(); document.execCommand("insertText", false, (e.clipboardData.getData("text/plain") || "").replace(/\s*\n\s*/g, " "));
+});
+
+function startDraft(trackId, baseId){
+  if (draft && draft.trackId !== trackId && !confirm(`You have an unsaved draft for ${track(draft.trackId)?.name}. Throw it away and start a new one?`)) return;
+  if (draft && draft.trackId === trackId && draft.baseId !== baseId && !confirm("You already have an unsaved draft here. Replace it with a fresh copy?")) { go(trackId, null, "edit"); return; }
+  if (!draft || draft.trackId !== trackId || draft.baseId !== baseId) {
+    const rubric = clone(version(baseId).rubric);
+    draft = {trackId, baseId, rubric, startedAt:new Date().toISOString()};
+    saveDraft();
+  }
+  go(trackId, null, "edit");
+}
+function editAct(act, d){
+  const p = draft.rubric.pages[+d.pi], i = +d.i;
+  switch (act) {
+    case "addCrit": {
+      const last = p.criteria[p.criteria.length - 1];
+      p.criteria.push({id:uid(), tag:last ? last.tag : "", name:"", sub:"", writeIn:false, levels:last ? last.levels.slice() : ["","","","",""]});
+      break;
+    }
+    case "moveCrit": { const j = i + +d.d; if (j < 0 || j >= p.criteria.length) return; [p.criteria[i], p.criteria[j]] = [p.criteria[j], p.criteria[i]]; break; }
+    case "dupCrit": p.criteria.splice(i + 1, 0, {...clone(p.criteria[i]), id:uid()}); break;
+    case "lineCrit": p.criteria[i].writeIn = !p.criteria[i].writeIn; break;
+    case "delCrit": if (!confirm(`Remove the “${p.criteria[i].name || "untitled"}” row?`)) return; p.criteria.splice(i, 1); break;
+    case "addField": p.fields.push(""); break;
+    case "delField": p.fields.splice(i, 1); break;
+    case "addBox": p.boxes.push({id:uid(), title:"", lines:2}); break;
+    case "delBox": p.boxes.splice(i, 1); break;
+    case "boxLines": p.boxes[i].lines = Math.min(12, Math.max(1, (p.boxes[i].lines | 0) + +d.d)); break;
+    case "addNote": p.notes.push(""); break;
+    case "delNote": p.notes.splice(i, 1); break;
+    case "resetPage": {
+      const ml = latest("master").rubric, mp = ml.pages.find(x => x.id === p.id) || ml.pages[+d.pi];
+      if (!mp || !confirm(`Replace page ${+d.pi + 1} with the master template's (${latest("master").label})? Your changes on this page are lost.`)) return;
+      draft.rubric.pages[+d.pi] = clone(mp); break;
+    }
+  }
+  saveDraft(); renderMain();
+  if (act === "addCrit" || act === "addField" || act === "addBox" || act === "addNote") {
+    const sel = {addCrit:`.page[data-page="${d.pi}"] tbody tr:last-child .cn`, addField:`.page[data-page="${d.pi}"] .fld:nth-last-child(2) .fl2`,
+      addBox:`.page[data-page="${d.pi}"] .box:last-child .bt2`, addNote:`.page[data-page="${d.pi}"] .notes .nl:last-of-type`}[act];
+    const all = $$(sel); all[all.length - 1]?.focus();
+  }
+}
+function tidy(r){
+  const t = s => String(s ?? "").replace(/[\r\n\t]+/g, " ").trim();   // keeps the PDF's deliberate double spaces
+  r.title = t(r.title); r.catHead = t(r.catHead); r.catSub = t(r.catSub); r.scale = r.scale.map(t);
+  r.pages.forEach(p => {
+    ["name","subtitle","instruction","legend","notesTitle","footer"].forEach(k => p[k] = t(p[k]));
+    p.fields = p.fields.map(t).filter(Boolean);
+    p.notes = p.notes.map(t).filter(Boolean);
+    p.boxes = p.boxes.map(b => ({...b, title:t(b.title)})).filter(b => b.title);
+    p.criteria.forEach(c => { c.tag = t(c.tag); c.name = t(c.name); c.sub = t(c.sub); c.levels = c.levels.map(t); });
+  });
+  return r;
+}
+
+/* ---------- save dialog ---------- */
+function openSave(){
+  const t = track(draft.trackId), isM = t.kind === "master";
+  $("#saveLead").textContent = `${t.name}: this becomes the newest version. Earlier versions stay available in History.`;
+  $("#sLabel").value = isM ? nextMasterLabel() : semesterNow();
+  $("#sLabelHint").textContent = isM ? "Master versions are numbered, e.g. v1.1." : "Usually the semester it's for, e.g. Spring 2027.";
+  $("#sName").value = lsGet(LS.name, "") || "";
+  $("#sNote").value = "";
+  openDlg("#dSave");
+  ($("#sName").value ? $("#sNote") : $("#sName")).focus();
+}
+$("#dSave").addEventListener("close", async () => {
+  if ($("#dSave").returnValue !== "ok" || !draft) return;
+  const t = track(draft.trackId);
+  let label = $("#sLabel").value.trim(); const author = $("#sName").value.trim(), note = $("#sNote").value.trim();
+  if (!label || !author) return;
+  const taken = new Set(versionsOf(t.id).map(v => v.label.toLowerCase()));
+  if (taken.has(label.toLowerCase())) { let k = 2; while (taken.has(`${label} (${k})`.toLowerCase())) k++; label = `${label} (${k})`; }
+  lsSet(LS.name, author);
+  const base = version(draft.baseId);
+  const v = {id:uid(), trackId:t.id, label, author, savedAt:new Date().toISOString(), note,
+    basedOn: base ? {versionId:base.id, trackId:base.trackId, label:base.label} : null, rubric:tidy(clone(draft.rubric))};
+  db.versions.push(v); db = normalize(db);
+  draft = null; saveDraft();
+  go(t.id, null, "view");
+  const ok = await commit(`Solar Evals: ${t.name} ${label} (by ${author})`);
+  if (ok) toast(`Saved ${t.name} ${label}. The next CEs will see it.`);
+});
+
+/* =========================================================
+   COMPARING VERSIONS
+   ========================================================= */
+const norm = s => String(s || "").replace(/\s+/g, " ").trim();
+const differ = (a, b) => norm(a) !== norm(b);
+function wdiff(a, b){
+  a = norm(a); b = norm(b);
+  const A = a.split(/(\s+)/), Bw = b.split(/(\s+)/);
+  const n = A.length, m = Bw.length, L = Array.from({length:n + 1}, () => new Int16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === Bw[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  let i = 0, j = 0, out = "";
+  while (i < n && j < m) {
+    if (A[i] === Bw[j]) { out += esc(A[i]); i++; j++; }
+    else if (L[i + 1][j] >= L[i][j + 1]) out += `<del>${esc(A[i++])}</del>`;
+    else out += `<ins>${esc(Bw[j++])}</ins>`;
+  }
+  while (i < n) out += `<del>${esc(A[i++])}</del>`;
+  while (j < m) out += `<ins>${esc(Bw[j++])}</ins>`;
+  // Mostly rewritten: show the old and new text whole instead of a word salad.
+  if (n + m > 12 && (2 * L[0][0]) / (n + m) < 0.45) return `<del>${esc(a)}</del><br><ins>${esc(b)}</ins>`;
+  return out.replace(/<\/del><del>/g, "").replace(/<\/ins><ins>/g, "");
+}
+function listDiff(a, b){
+  const A = a.map(norm), B = b.map(norm);
+  const add = b.filter(x => !A.includes(norm(x))), rem = a.filter(x => !B.includes(norm(x)));
+  return {add, rem};
+}
+function diffRubrics(A, B){
+  const sec = [], top = [];
+  const item = (kind, k, v="") => ({kind, k, v});
+  const chg = (k, a, b) => { if (differ(a, b)) top.push(item("chg", k, wdiff(a, b))); };
+  chg("Title", A.title, B.title); chg("Category heading", A.catHead, B.catHead); chg("Category sub-heading", A.catSub, B.catSub);
+  B.scale.forEach((s, i) => chg(`Rating ${i + 1} label`, A.scale[i], s));
+  if (top.length) sec.push({h:"Whole rubric", items:top});
+  const Ap = Object.fromEntries(A.pages.map(p => [p.id, p]));
+  B.pages.forEach((bp, pi) => {
+    const ap = Ap[bp.id], items = [];
+    const h = `Page ${pi + 1} · ${bp.name}`;
+    if (!ap) { sec.push({h, items:[item("add", "New page")]}); return; }
+    const c = (k, a, b) => { if (differ(a, b)) items.push(item("chg", k, wdiff(a, b))); };
+    c("Page name", ap.name, bp.name); c("Subtitle", ap.subtitle, bp.subtitle); c("Instructions", ap.instruction, bp.instruction); c("Legend", ap.legend, bp.legend);
+    const f = listDiff(ap.fields, bp.fields);
+    f.add.forEach(x => items.push(item("add", "Header field", esc(x)))); f.rem.forEach(x => items.push(item("rem", "Header field", esc(x))));
+    const Ac = Object.fromEntries(ap.criteria.map(x => [x.id, x])), Bc = Object.fromEntries(bp.criteria.map(x => [x.id, x]));
+    bp.criteria.forEach(bc => {
+      const ac = Ac[bc.id];
+      if (!ac) { items.push(item("add", `Criterion: ${esc(bc.name || "untitled")}`, bc.levels.map((l, i) => `<b>${i + 1}</b> ${esc(l)}`).join("<br>"))); return; }
+      const nm = esc(bc.name || ac.name);
+      if (differ(ac.name, bc.name)) items.push(item("chg", "Criterion renamed", wdiff(ac.name, bc.name)));
+      if (differ(ac.tag, bc.tag)) items.push(item("chg", `${nm}: tag`, wdiff(ac.tag, bc.tag)));
+      if (differ(ac.sub, bc.sub)) items.push(item("chg", `${nm}: description`, wdiff(ac.sub, bc.sub)));
+      if (!!ac.writeIn !== !!bc.writeIn) items.push(item("chg", `${nm}: write-in line`, bc.writeIn ? "added" : "removed"));
+      bc.levels.forEach((l, i) => { if (differ(l, ac.levels[i])) items.push(item("chg", `${nm}: ${i + 1} (${esc(B.scale[i])})`, wdiff(ac.levels[i], l))); });
+    });
+    ap.criteria.forEach(ac => { if (!Bc[ac.id]) items.push(item("rem", `Criterion: ${esc(ac.name || "untitled")}`)); });
+    const ao = ap.criteria.filter(x => Bc[x.id]).map(x => x.id).join(), bo = bp.criteria.filter(x => Ac[x.id]).map(x => x.id).join();
+    if (ao !== bo) items.push(item("chg", "Rows reordered"));
+    const Ab = Object.fromEntries(ap.boxes.map(x => [x.id, x])), Bb = Object.fromEntries(bp.boxes.map(x => [x.id, x]));
+    bp.boxes.forEach(bb => { const ab = Ab[bb.id];
+      if (!ab) items.push(item("add", "Feedback box", esc(bb.title)));
+      else { if (differ(ab.title, bb.title)) items.push(item("chg", "Feedback box renamed", wdiff(ab.title, bb.title)));
+             if ((ab.lines | 0) !== (bb.lines | 0)) items.push(item("chg", `${esc(bb.title)}: lines`, `${ab.lines} → ${bb.lines}`)); } });
+    ap.boxes.forEach(ab => { if (!Bb[ab.id]) items.push(item("rem", "Feedback box", esc(ab.title))); });
+    c("Notes heading", ap.notesTitle, bp.notesTitle);
+    const nd = listDiff(ap.notes, bp.notes);
+    if (nd.add.length === 1 && nd.rem.length === 1) items.push(item("chg", "Note", wdiff(nd.rem[0], nd.add[0])));
+    else { nd.add.forEach(x => items.push(item("add", "Note", esc(x)))); nd.rem.forEach(x => items.push(item("rem", "Note", esc(x)))); }
+    c("Footer", ap.footer, bp.footer);
+    sec.push({h, items});
+  });
+  const Bp = new Set(B.pages.map(p => p.id));
+  A.pages.forEach(ap => { if (!Bp.has(ap.id)) sec.push({h:`Page · ${ap.name}`, items:[item("rem", "Page removed")]}); });
+  return sec;
+}
+function compareHTML(){
+  const opts = sel => db.tracks.filter(t => versionsOf(t.id).length).map(t => `<optgroup label="${esc(t.name)}">${
+      versionsOf(t.id).slice().reverse().map(v => `<option value="${esc(v.id)}"${v.id === sel ? " selected" : ""}>${esc(t.name)} · ${esc(v.label)}</option>`).join("")}</optgroup>`).join("")
+    + (draft ? `<optgroup label="Unsaved"><option value="__draft"${sel === "__draft" ? " selected" : ""}>Your draft (${esc(track(draft.trackId)?.name)})</option></optgroup>` : "");
+  const get = id => id === "__draft" ? (draft && {rubric:draft.rubric}) : version(id);
+  const A = get(view.cmpA), B = get(view.cmpB);
+  let body = "";
+  if (A && B) {
+    const secs = diffRubrics(A.rubric, B.rubric), total = secs.reduce((s, x) => s + x.items.length, 0);
+    body = total ? `<div class="meta" style="color:var(--muted);font-size:13.5px">${total} change${total === 1 ? "" : "s"}. <ins>Green</ins> was added, <del>red</del> was removed.</div>` +
+      secs.filter(s => s.items.length).map(s => `<h3>${esc(s.h)}</h3><ul>${s.items.map(it =>
+        `<li><div class="k"><span class="tag ${it.kind}">${{add:"Added", rem:"Removed", chg:"Changed"}[it.kind]}</span>${it.k}</div>${it.v ? `<div class="v">${it.v}</div>` : ""}</li>`).join("")}</ul>`).join("")
+      : `<p class="none">These two are identical.</p>`;
+  }
+  const t = track(view.trackId);
+  return toolbarHTML(t, `<div class="meta">See exactly what changed between any two versions.</div>`, `<button class="btn" data-act="closeCompare">Done</button>`) +
+    `<div class="cmp"><div class="cmp-bar"><label for="cA">From</label><select class="sel" id="cA" data-act="cmpPick">${opts(view.cmpA)}</select>
+      <button class="btn" data-act="cmpSwap" title="Swap">⇄</button>
+      <label for="cB">To</label><select class="sel" id="cB" data-act="cmpPick">${opts(view.cmpB)}</select></div>${body}</div>`;
+}
+function openCompare(a, b){ view.cmpA = a; view.cmpB = b; view.back = view.mode === "edit" ? "edit" : "view"; view.mode = "compare"; render(); window.scrollTo({top:0}); }
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+function openHistory(){
+  const t = track(view.trackId), vs = versionsOf(t.id).slice().reverse();
+  $("#histTitle").textContent = `${t.name}: history`;
+  $("#histList").innerHTML = vs.map((v, i) => {
+    const prev = vs[i + 1], based = v.basedOn && version(v.basedOn.versionId);
+    return `<li><div><div class="hl">${esc(v.label)}${i === 0 ? ' <span class="badge">Latest</span>' : ""}</div>
+      <div class="hm">${v.savedAt ? `${esc(v.author)} · ${fmtDate(v.savedAt)}` : esc(v.author)}${based ? ` · from ${esc(vName(based))}` : ""}</div>
+      ${v.note ? `<div class="hn">${esc(v.note)}</div>` : ""}</div>
+      <div class="ha"><button class="btn" data-act="histView" data-id="${esc(v.id)}">View</button>
+      ${prev || based ? `<button class="btn" data-act="histCmp" data-a="${esc((prev || based).id)}" data-b="${esc(v.id)}">What changed</button>` : ""}
+      ${v.id !== SEED_VERSION.id ? `<button class="btn danger" data-act="histRemove" data-id="${esc(v.id)}" title="Take out a version saved by mistake">Remove</button>` : ""}</div></li>`;
+  }).join("");
+  openDlg("#dHist");
+}
+
+function openPick(){
+  $("#pSel").innerHTML = db.tracks.filter(t => versionsOf(t.id).length).map(t => `<optgroup label="${esc(t.name)}">${
+    versionsOf(t.id).slice().reverse().map(v => `<option value="${esc(v.id)}">${esc(t.name)} · ${esc(v.label)}${v.savedAt ? " · " + fmtDate(v.savedAt) : ""}</option>`).join("")}</optgroup>`).join("");
+  const other = db.tracks.find(t => t.kind !== "master" && t.id !== view.trackId && versionsOf(t.id).length);
+  if (other) $("#pSel").value = latest(other.id).id;
+  openDlg("#dPick");
+}
+$("#dPick").addEventListener("close", () => { if ($("#dPick").returnValue === "ok" && $("#pSel").value) startDraft(view.trackId, $("#pSel").value); });
+async function removeVersion(id){
+  const v = version(id); if (!v) return;
+  if (!confirm(`Remove ${vName(v)}${v.author ? ` (saved by ${v.author})` : ""}?
+
+Only do this for a version saved by mistake. It disappears for everyone; GitHub's own history still has it.`)) return;
+  db.removed = [...(db.removed || []), id]; db = normalize(db);
+  $("#dHist").close();
+  go(view.trackId);
+  await commit(`Solar Evals: removed ${vName(v)}`);
+}
+function openDlg(sel){ const d = $(sel); d.returnValue = ""; d.showModal(); }
+
+/* =========================================================
+   CLICKS
+   ========================================================= */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b || b.tagName === "SELECT") return;
+  const d = b.dataset, act = d.act;
+  if ((b.classList.contains("eb") || act === "resetPage") && draft && view.mode === "edit") { editAct(act, d); return; }
+  switch (act) {
+    case "track": go(d.id); break;
+    case "startFrom": startDraft(view.trackId, d.id); break;
+    case "startOther": openPick(); break;
+    case "histRemove": removeVersion(d.id); break;
+    case "resume": go(view.trackId, null, "edit"); break;
+    case "discard": if (confirm("Throw away this draft? This can't be undone.")) { const t = draft.trackId; draft = null; saveDraft(); go(t, null, "view"); } break;
+    case "openSave": openSave(); break;
+    case "cmpDraft": openCompare(draft.baseId, "__draft"); break;
+    case "pickLatest": go(view.trackId, null, "view"); break;
+    case "history": openHistory(); break;
+    case "histView": $("#dHist").close(); go(view.trackId, d.id, "view"); break;
+    case "histCmp": $("#dHist").close(); openCompare(d.a, d.b); break;
+    case "compare": { const v = shownVersion(); const vs = versionsOf(view.trackId); const i = vs.indexOf(v);
+      const a = (v.basedOn && version(v.basedOn.versionId)) || vs[i - 1] || latest("master"); openCompare(a.id, v.id); break; }
+    case "compareAny": openCompare(latest("master").id, (shownVersion() || latest("master")).id); break;
+    case "cmpPair": openCompare(d.a, d.b); break;
+    case "cmpSwap": [view.cmpA, view.cmpB] = [view.cmpB, view.cmpA]; renderMain(); break;
+    case "closeCompare": view.mode = view.back === "edit" && draft && draft.trackId === view.trackId ? "edit" : "view"; render(); break;
+    case "print": window.print(); break;
+    case "addTrack": openTrackDlg(null); break;
+    case "renameTrack": openTrackDlg(track(view.trackId)); break;
+    case "export": exportData(); break;
+    case "import": $("#importFile").click(); break;
+  }
+});
+$("#main").addEventListener("change", e => {
+  const s = e.target;
+  if (s.dataset.act === "pickVersion") { const vs = versionsOf(view.trackId); go(view.trackId, s.value === vs[vs.length - 1].id ? null : s.value, "view"); }
+  if (s.dataset.act === "cmpPick") { view.cmpA = $("#cA").value; view.cmpB = $("#cB").value; renderMain(); }
+});
+$$("dialog [data-close]").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
+
+/* ---------- divisions ---------- */
+let trackEditing = null;
+function openTrackDlg(t){
+  trackEditing = t;
+  $("#trackTitle").textContent = t ? "Rename division" : "Add a division";
+  $("#trackLead").textContent = t ? "Its versions stay with it." : "For a CE role or division that isn't listed yet. It starts with no versions.";
+  $("#tName").value = t ? t.name : ""; $("#tColor").value = t ? (t.color || "#5b6e7c") : "#5b6e7c";
+  openDlg("#dTrack"); $("#tName").focus();
+}
+$("#dTrack").addEventListener("close", async () => {
+  if ($("#dTrack").returnValue !== "ok") return;
+  const name = $("#tName").value.trim(), color = $("#tColor").value; if (!name) return;
+  const now = Date.now();
+  if (trackEditing) { Object.assign(trackEditing, {name, color, updatedAt:now}); db = normalize(db); render(); await commit(`Solar Evals: renamed division to ${name}`); }
+  else {
+    const id = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 30) + "-" + uid().slice(-4);
+    db.tracks.push({id, name, kind:"ce", color, createdAt:new Date().toISOString(), updatedAt:now}); db = normalize(db);
+    go(id); await commit(`Solar Evals: added division ${name}`);
+  }
+});
+
+/* ---------- files ---------- */
+function exportData(){
+  const blob = new Blob([JSON.stringify(db, null, 1)], {type:"application/json"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `solar-evals-data-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+$("#importFile").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    if (data.app !== "solar-evals") throw new Error("not a Solar Evals file");
+    const n = db.versions.length; db = merge(db, data); render();
+    toast(`Loaded ${db.versions.length - n} new version${db.versions.length - n === 1 ? "" : "s"}.`);
+    if (db.versions.length > n) await commit("Solar Evals: loaded versions from a file");
+    else persist();
+  } catch (err) { toast("That file couldn't be loaded: " + err.message, 4500); }
+});
+
+/* ---------- sharing dialog ---------- */
+$("#status").addEventListener("click", () => {
+  $("#cRepo").value = conn.repo || DEFAULT_CONN.repo; $("#cPath").value = conn.path || DEFAULT_CONN.path;
+  $("#cBranch").value = conn.branch || ""; $("#cToken").value = conn.token || "";
+  const st = $("#connState");
+  st.innerHTML = `<span class="bt"><b>${esc($("#statusText").textContent)}</b>${sync.msg ? " · " + esc(sync.msg) : ""}</span>`;
+  openDlg("#dConn");
+});
+$("#dConn").addEventListener("close", () => {
+  const rv = $("#dConn").returnValue;
+  if (rv === "local") { conn = {...conn, localOnly:true}; lsSet(LS.conn, conn); setSync("local"); toast("Now saving in this browser only."); return; }
+  if (rv !== "ok") return;
+  conn = {repo:$("#cRepo").value.trim().replace(/^https?:\/\/github\.com\//, "").replace(/\.git$|\/$/g, "") || DEFAULT_CONN.repo,
+          path:$("#cPath").value.trim().replace(/^\//, "") || DEFAULT_CONN.path, branch:$("#cBranch").value.trim(), token:$("#cToken").value.trim()};
+  if (!lsSet(LS.conn, conn)) toast("This browser won't remember the token after you close it.");
+  syncNow();
+});
+
+/* =========================================================
+   START
+   ========================================================= */
+if (draft && (!track(draft.trackId) || !draft.rubric)) { draft = null; saveDraft(); }
+fromHash();
+syncNow();
+</script>
+</body>
+</html>

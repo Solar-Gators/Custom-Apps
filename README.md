@@ -24,3 +24,13 @@ Skip the **Share** button and GatorWire works entirely offline, with no account 
 
 ## [CE Scope Map](https://solar-gators.github.io/Custom-Apps/responsibilitymap)
 An editable four-way Venn diagram of Chief Engineer responsibilities and where their scopes overlap. A living document for future CEs.
+
+## [Solar Evals](https://solar-gators.github.io/Custom-Apps/solarevals)
+The semester review rubric. It holds the **master template** and a version for each CE division, and every saved version is kept, so the next CE sees what the last one used and why they changed it.
+
+- **Look:** pick the master template or a CE division on the left. **Print / PDF** prints the two-page form.
+- **Make your version:** open your division and click **Start from master** (or **Make a new version**). Click any text on the pages to change it, add or remove criterion rows, then **Save as new version** with your name and a note on what changed.
+- **History** lists every version. **Compare** shows exactly what changed between any two (for example master vs. your division, or this semester vs. last).
+- If the master template changes after you made your version, your division shows a note with a link to see what changed.
+
+Versions are saved to `rubrics.json` in **[Solar-Gators/Solar-Evals](https://github.com/Solar-Gators/Solar-Evals)**. Saving needs a token, made the same way as for GatorWire but for the Solar-Evals repository; click the status at the top right to connect. Without a token you can still look at everything.
