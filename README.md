@@ -26,7 +26,7 @@ Skip the **Share** button and GatorWire works entirely offline, with no account 
 An editable four-way Venn diagram of Chief Engineer responsibilities and where their scopes overlap. A living document for future CEs.
 
 ## [Solar Evals](https://solar-gators.github.io/Custom-Apps/solarevals)
-Semester member reviews, filled out online instead of on paper. Sign in with your **[Order Form](https://solar-gators.github.io/Orders-Form/)** account; everything is kept in the Order Form's database (it needs the Order Form's `028_solar_evals.sql` migration).
+Semester member reviews, filled out online instead of on paper. Sign in with your **[OneSolar](https://solar-gators.github.io/one.solar/)** account (the same one as the [Order Form](https://solar-gators.github.io/Orders-Form/)); everything is kept in the Order Form's database (it needs the Order Form's `028_solar_evals.sql` migration).
 
 **Rubrics** holds the master template and a version for each CE division. Every saved version is kept, so the next CE sees what the last one used and why they changed it.
 - **Make your version:** open your division and click **Start from master** (or **Make a new version**). Click any text on the pages to change it, add or remove criterion rows, then **Save as new version** with a note on what changed.
@@ -34,7 +34,7 @@ Semester member reviews, filled out online instead of on paper. Sign in with you
 
 **Evaluations** is where CEs review members.
 - **New evaluation:** pick the rubric (your division's latest), the member's name, their email (optional, for sharing) and the semester. Click a box to rate it (click again to clear), or N/O. Fill in the blanks and feedback boxes. It saves as you go.
-- **Mark finished** checks for unrated rows, and for 1/2/4/5 ratings with no evidence. A finished eval can be read by every CE, the e-board, and the subsystem lead you picked. **Share with member** lets the member read it and add their comments; it needs an Order Form account with that email.
+- **Mark finished** checks for unrated rows, and for 1/2/4/5 ratings with no evidence. A finished eval can be read by every CE, the e-board, and the subsystem lead you picked. **Share with member** lets the member read it and add their comments; it needs a OneSolar account with that email.
 - **Print / PDF** prints the filled-in form, on the same two landscape pages as the paper one.
 
 Leads and members see only what's theirs; the database decides that, not the page.
