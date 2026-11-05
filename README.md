@@ -26,11 +26,17 @@ Skip the **Share** button and GatorWire works entirely offline, with no account 
 An editable four-way Venn diagram of Chief Engineer responsibilities and where their scopes overlap. A living document for future CEs.
 
 ## [Solar Evals](https://solar-gators.github.io/Custom-Apps/solarevals)
-The semester review rubric. It holds the **master template** and a version for each CE division, and every saved version is kept, so the next CE sees what the last one used and why they changed it.
+Semester member reviews, filled out online instead of on paper. Sign in with your **[Order Form](https://solar-gators.github.io/Orders-Form/)** account; everything is kept in the Order Form's database (it needs the Order Form's `028_solar_evals.sql` migration).
 
-- **Look:** pick the master template or a CE division on the left. **Print / PDF** prints the two-page form.
-- **Make your version:** open your division and click **Start from master** (or **Make a new version**). Click any text on the pages to change it, add or remove criterion rows, then **Save as new version** with your name and a note on what changed.
-- **History** lists every version. **Compare** shows exactly what changed between any two (for example master vs. your division, or this semester vs. last).
-- If the master template changes after you made your version, your division shows a note with a link to see what changed.
+**Rubrics** holds the master template and a version for each CE division. Every saved version is kept, so the next CE sees what the last one used and why they changed it.
+- **Make your version:** open your division and click **Start from master** (or **Make a new version**). Click any text on the pages to change it, add or remove criterion rows, then **Save as new version** with a note on what changed.
+- **History** lists every version. **Compare** shows exactly what changed between any two. If the master changes after you made your version, your division shows a note linking to the changes.
 
-Versions are saved to `rubrics.json` in **[Solar-Gators/Solar-Evals](https://github.com/Solar-Gators/Solar-Evals)**. Saving needs a token, made the same way as for GatorWire but for the Solar-Evals repository; click the status at the top right to connect. Without a token you can still look at everything.
+**Evaluations** is where CEs review members.
+- **New evaluation:** pick the rubric (your division's latest), the member's name, their email (optional, for sharing) and the semester. Click a box to rate it (click again to clear), or N/O. Fill in the blanks and feedback boxes. It saves as you go.
+- **Mark finished** checks for unrated rows, and for 1/2/4/5 ratings with no evidence. A finished eval can be read by every CE, the e-board, and the subsystem lead you picked. **Share with member** lets the member read it and add their comments; it needs an Order Form account with that email.
+- **Print / PDF** prints the filled-in form, on the same two landscape pages as the paper one.
+
+Leads and members see only what's theirs; the database decides that, not the page.
+
+For testing on your own computer, `?fake` on `localhost` uses a stand-in database from `dev/fake-supabase.js` (not in this repo).
