@@ -268,6 +268,38 @@ table.list .none{color:var(--muted);text-align:center;padding:22px}
 .st.shared{background:var(--ins);color:var(--ins-ink)}
 .st.self{background:var(--panel-2);color:var(--ink-2);border:1px solid var(--line)}
 
+/* ---------- the member's self-eval: a few written questions ---------- */
+.qa{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 22px 22px;box-shadow:var(--shadow);max-width:820px;margin-bottom:18px}
+.qa .hdr{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:2px 16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.qa .hdr .fl{margin-top:8px}
+.qa .hdr .hv{font-size:14px;color:var(--ink-2);min-height:20px}
+.qa .q{margin-top:20px}
+.qa .qt{font-weight:900;color:var(--navy);font-size:15.5px;line-height:1.35}
+.qa .qn{color:var(--orange);margin-right:6px}
+.qa .qh{color:var(--muted);font-size:12.8px;margin-top:2px}
+.qa textarea.fi{margin-top:8px;min-height:96px;resize:vertical;line-height:1.5}
+.qa .ansv{white-space:pre-wrap;margin-top:6px;color:var(--ink-2);font-size:14.5px}
+.qa .ansv.none{color:var(--muted);font-style:italic}
+
+/* ---------- a CE's questions ---------- */
+.qe{max-width:900px}
+.qrow{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:6px 10px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 12px;margin-bottom:8px}
+.qrow .qi{font-weight:900;color:var(--orange);padding-top:9px;text-align:right}
+.qrow textarea.fi{resize:vertical;min-height:44px;line-height:1.4}
+.qrow .fi + .fi{margin-top:6px}
+.qrow .qb{display:flex;gap:4px;padding-top:4px}
+.qrow .qb .btn{padding:5px 9px;font-size:12.5px}
+.qsets{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:8px}
+.qset{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.qset .qsh{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}
+.qset .qsh b{color:var(--navy)}
+.qset ol{margin:0;padding-left:20px;font-size:13.6px;color:var(--ink-2)}
+.qset li{margin:5px 0}
+.qset li .link{background:none;border:0;padding:0 0 0 4px;color:var(--accent);font-weight:700;cursor:pointer;font-size:12.5px}
+.qset li .link:hover{text-decoration:underline}
+.qset .btn{padding:4px 10px;font-size:12.3px}
+h3.sec{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:26px 0 4px}
+
 /* ---------- self-evals waiting for a CE ---------- */
 .inbox{margin-bottom:18px}
 .inbox h3,.rv h3{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
@@ -351,6 +383,7 @@ table.rub td.lv.on::after{background:var(--navy);border-color:var(--navy);box-sh
 @media print{
   html,body{background:#fff!important}
   header.site,aside.side,.tb,.banner,.ptools,.cmp,.rv,.inbox,.empty,#toast,dialog,.ed{display:none!important}
+  .qa{box-shadow:none;border:0;max-width:none}
   .layout{display:block}
   main{padding:0}
   .sheets{overflow:visible;padding:0}
@@ -372,6 +405,7 @@ table.rub td.lv.on::after{background:var(--navy);border-color:var(--navy);box-sh
   <nav class="tabs" id="tabs" hidden>
     <a href="#/evals" data-tab="evals">Evaluations</a>
     <a href="#/rubrics" data-tab="rubrics">Rubrics</a>
+    <a href="#/questions" data-tab="questions" id="tabQ" hidden>Questions</a>
   </nav>
   <div class="spacer"></div>
   <div class="acct" id="acct" hidden><span id="acctName"></span><button class="btn sm" id="signOut">Sign out</button></div>
@@ -442,16 +476,17 @@ table.rub td.lv.on::after{background:var(--navy);border-color:var(--navy);box-sh
 <!-- New self-evaluation (any member) -->
 <dialog id="dSelf"><form class="dlg" method="dialog">
   <h3>Fill out your self-evaluation</h3>
-  <p class="lead">Rate yourself on your division's rubric. Only you can see it until you submit it to your CE. It saves as you go.</p>
+  <p class="lead">Answer a few questions from your CE about your semester. Only you can see it until you submit it to them. It saves as you go.</p>
   <label class="fl" for="sfTrack">Your division</label>
   <select class="fi" id="sfTrack" required></select>
+  <div class="fh">Your CE's evaluation of you uses this division's rubric.</div>
   <label class="fl" for="sfSem">Semester</label>
   <input class="fi" id="sfSem" required maxlength="40" autocomplete="off">
   <label class="fl" for="sfSub">Subsystem</label>
   <input class="fi" id="sfSub" maxlength="80" autocomplete="off" placeholder="e.g. BMS">
   <label class="fl" for="sfCe">Your CE</label>
   <select class="fi" id="sfCe" required></select>
-  <div class="fh">They're emailed when you submit, and fill out their own eval of you.</div>
+  <div class="fh">You answer their questions. They're emailed when you submit, and fill out their own eval of you.</div>
   <label class="fl" for="sfLead">Your subsystem lead (optional)</label>
   <select class="fi" id="sfLead"></select>
   <div class="dlg-a"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Start</button></div>
@@ -476,8 +511,9 @@ table.rub td.lv.on::after{background:var(--navy);border-color:var(--navy);box-sh
    SOLAR EVALS
    Signs in with OneSolar accounts (the Order Form's) and keeps everything in
    the Order Form's database (migrations 028_solar_evals.sql, 030_onesolar_wording.sql,
-   031_eval_self_reviews.sql).
-   A semester review: the member submits a self-eval to their CE → the CE
+   031_eval_self_reviews.sql, 032_eval_questions.sql).
+   A semester review: the member answers their CE's questions (each CE sets
+   their own on the Questions tab) and submits them to their CE → the CE
    writes theirs (with the lead's input) → once it's finished the CE sees the
    self-eval and schedules the meeting → after the meeting the CE shares, and
    the member reads both.
@@ -560,7 +596,7 @@ const ces = () => people.filter(p => ceIds.has(p.id) && p.id !== me.id);
 function sendQueued(){ try { sb.functions?.invoke("send-notifications", {body:{}}).catch(() => {}); } catch {} }
 
 function showSignIn(msg=""){
-  me = null; people = []; ceIds = new Set(); evals = []; inbox = []; evalState = null;   // nothing from the last person stays in memory
+  me = null; people = []; ceIds = new Set(); evals = []; inbox = []; evalState = null; qsets = []; qDraft = null; qDirty = false;   // nothing from the last person stays in memory
   $("#tabs").hidden = true; $("#acct").hidden = true;
   $("#layout").classList.add("nosb");
   $("#main").innerHTML = `<form class="signin" id="fSignIn">
@@ -589,7 +625,8 @@ async function boot(session){
     try {
       evalState = null;
       await loadMe(session);
-      await Promise.all([loadRubrics(), loadEvals()]);
+      await Promise.all([loadRubrics(), loadEvals(), loadQuestions()]);
+      $("#tabQ").hidden = !can("evals.write");
       $("#tabs").hidden = false; $("#acct").hidden = false;
       $("#acctName").textContent = me.name;
       route();
@@ -665,7 +702,8 @@ async function route(){
     await openEval(b);
     if (seq !== routeSeq) return;
     section = "eval";
-  } else section = "evals";
+  } else if (a === "questions" && can("evals.write")) section = "questions";
+  else section = "evals";
   render();
 }
 window.addEventListener("hashchange", route);
@@ -680,11 +718,12 @@ function go(trackId, versionId=null, mode="view"){
 const shownVersion = () => view.versionId ? version(view.versionId) : latest(view.trackId);
 
 function render(){
-  $$("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.tab === (section === "rubrics" ? "rubrics" : "evals")));
+  $$("#tabs a").forEach(a => a.classList.toggle("on", a.dataset.tab === (section === "rubrics" || section === "questions" ? section : "evals")));
   $("#layout").classList.toggle("nosb", section !== "rubrics");
   $("#main").classList.remove("editing", "filling");
   if (section === "rubrics") { renderSide(); renderRubric(); }
   else if (section === "eval") renderEval();
+  else if (section === "questions") renderQuestions();
   else renderList();
 }
 
@@ -1215,6 +1254,12 @@ $("#main").addEventListener("change", e => {
   if (section === "eval") onEvalInput(e);
 });
 $("#main").addEventListener("input", e => {
+  const t = e.target;
+  if (section === "questions" && qDraft && (t.dataset.qtext != null || t.dataset.qhint != null)) {
+    const q = qDraft[+(t.dataset.qtext ?? t.dataset.qhint)];
+    if (q) { if (t.dataset.qtext != null) q.text = t.value; else q.hint = t.value; qChanged(false); }
+    return;
+  }
   if (e.target.id === "fQ") { filt.q = e.target.value; const pos = e.target.selectionStart; renderList(); const q = $("#fQ"); q.focus(); q.setSelectionRange(pos, pos); }
 });
 $("#main").addEventListener("keydown", e => {
@@ -1294,9 +1339,19 @@ const evalLive = () => {
   return r.kind === "self" ? r.status === "draft" : r.status !== "shared" && can("evals.write");
 };
 
-/* The member's ratings and answers next to the CE's (once the CE's eval is finished). */
+/* The member's answers (or, for a 031 self-eval, ratings) next to the CE's eval, once the CE's eval is finished. */
+const questionsOf = e => Array.isArray(e?.rubric?.questions) ? e.rubric.questions : null;
 function reviewHTML(ce, self){
   if (!ce || !self) return "";
+  const qs = questionsOf(self);
+  if (qs) {
+    const memberName = esc(self.member_name || "The member");
+    return `<details class="rv" open><summary>${memberName}'s self-eval answers</summary>
+      <div class="rvsub">Submitted ${fmtDate(self.finalized_at)}. Good things to talk about in the meeting. <a href="#/evals/${esc(self.id)}">Open the self-eval</a></div>
+      ${qs.map((q, i) => { const a = (self.answers?.[q.id] || "").trim();
+        return `<div class="ans" style="grid-template-columns:1fr;margin-top:10px"><div class="k" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--navy)">${i + 1}. ${esc(q.text)}</div>
+          <div class="v${a ? "" : " none"}">${a ? esc(a) : "No answer"}</div></div>`; }).join("")}</details>`;
+  }
   const r = ce.rubric, crit = r.pages.flatMap(p => p.criteria), boxes = r.pages.flatMap(p => p.boxes);
   const show = v => v == null ? '<span class="savest">—</span>' : v === "NO" ? "N/O" : `${v}<span class="lbl">${esc(r.scale[v - 1] || "")}</span>`;
   const rowsH = crit.map(c => {
@@ -1374,23 +1429,54 @@ function renderSelf(){
   if (mine && e.status !== "draft" && !ce) acts += `<button class="btn" data-act="selfBack">Take back</button>`;
   acts += `<button class="btn" data-act="evPrint">Print / PDF</button>`;
   let h = toolbarHTML(mine ? "Your self-evaluation" : `${e.member_name || "Member"}'s self-evaluation`, meta, acts, "var(--orange)");
+  const qs = questionsOf(e);
   let tip;
-  if (mine && e.status === "draft") tip = `Rate yourself honestly; a 3 means you fully meet expectations. Only you can see this. ${e.ce_id ? "When you're done, submit it" : "Pick your CE in <b>Evaluating CE</b>, then submit"}: ${ceName} is emailed and fills out their own eval of you.`;
-  else if (mine && ce) tip = `<b>${esc(personName(ce.evaluator_id))}</b> shared your evaluation after your meeting. It's below next to your self-eval. <a href="#/evals/${esc(ce.id)}">Open it</a> to add your comments.`;
+  if (mine && e.status === "draft" && qs) tip = `Answer ${e.ce_id ? `${ceName}'s` : "your CE's"} questions in your own words. Only you can see this. ${e.ce_id ? "When you're done, submit it" : "Pick your CE first, then submit"}: ${ceName} is emailed and fills out their own eval of you.`;
+  else if (mine && e.status === "draft") tip = `Rate yourself honestly; a 3 means you fully meet expectations. Only you can see this. ${e.ce_id ? "When you're done, submit it" : "Pick your CE in <b>Evaluating CE</b>, then submit"}: ${ceName} is emailed and fills out their own eval of you.`;
+  else if (mine && ce) tip = `<b>${esc(personName(ce.evaluator_id))}</b> shared your evaluation after your meeting. <a href="#/evals/${esc(ce.id)}">Open it</a> to read it and add your comments.`;
   else if (mine) tip = `Submitted to ${ceName}. They fill out their eval of you next${e.meeting_at ? "" : " and then schedule your eval meeting"}. You'll see their evaluation here after the meeting.`
     + (e.meeting_at ? ` <br>Your eval meeting: ${meetingText(e)}.` : "");
-  else tip = `${esc(e.member_name)}'s own ratings and answers.${e.meeting_at ? ` Eval meeting: ${meetingText(e)}.` : ""}`;
+  else tip = `${esc(e.member_name)}'s own answers.${e.meeting_at ? ` Eval meeting: ${meetingText(e)}.` : ""}${ce ? ` <a href="#/evals/${esc(ce.id)}">Open the CE's eval</a>` : ""}`;
   h += `<div class="banner note"><span class="bt">${tip}</span></div>`;
+  if (qs) { m.innerHTML = h + selfFormHTML(e, live, qs); showSaveState(); return; }
   h += reviewHTML(ce, e);
   h += `<div class="sheets"><div class="sheetwrap">${pagesHTML(e.rubric, {mode:"fill", ev:e, live, who:"Self-evaluation", label:e.semester || ""})}</div></div>`;
   m.innerHTML = h; afterPages(); showSaveState();
+}
+function selfFormHTML(e, live, qs){
+  const opts = (list, val) => `<option value="">—</option>` + list.map(p => `<option value="${esc(p.id)}"${p.id === val ? " selected" : ""}>${esc(p.full_name || p.email)}</option>`).join("");
+  const f = (label, key, ctl) => `<div><label class="fl">${label}</label>${live ? ctl : `<div class="hv">${esc(key)}</div>`}</div>`;
+  const hdr = `<div class="hdr">
+    ${f("Member", e.member_name, `<div class="hv">${esc(e.member_name)}</div>`)}
+    ${f("Semester", e.semester, `<input class="fi" data-sf="semester" value="${esc(e.semester)}" maxlength="40" aria-label="Semester">`)}
+    ${f("Division", e.division || "—", `<div class="hv">${esc(e.division || "General")}</div>`)}
+    ${f("Subsystem", e.subsystem, `<input class="fi" data-sf="subsystem" value="${esc(e.subsystem)}" maxlength="80" aria-label="Subsystem">`)}
+    ${f("Your CE", personName(e.ce_id) || "—", `<select class="fi" data-sf="ce_id" aria-label="Your CE">${opts(ces(), e.ce_id)}</select>`)}
+    ${f("Subsystem lead", personName(e.lead_id) || "—", `<select class="fi" data-sf="lead_id" aria-label="Subsystem lead">${opts(people.filter(p => p.id !== me.id), e.lead_id)}</select>`)}
+  </div>`;
+  const body = qs.map((q, i) => {
+    const a = e.answers?.[q.id] || "";
+    return `<div class="q"><div class="qt"><span class="qn">${i + 1}.</span>${esc(q.text)}</div>${q.hint ? `<div class="qh">${esc(q.hint)}</div>` : ""}
+      ${live ? `<textarea class="fi" data-qa="${esc(q.id)}" rows="4" maxlength="4000" aria-label="${esc(q.text)}">${esc(a)}</textarea>`
+             : `<div class="ansv${a.trim() ? "" : " none"}">${a.trim() ? esc(a) : "No answer"}</div>`}</div>`;
+  }).join("");
+  return `<div class="qa">${hdr}${body}</div>`;
+}
+/* Picking another CE changes the questions (a draft follows its CE's list). */
+async function refreshQuestions(){
+  const st = evalState; if (!st || st.row.kind !== "self") return;
+  await flushEval();
+  const fresh = (await rows(sb.from("evals").select("rubric").eq("id", st.row.id)))[0];
+  if (fresh && evalState === st) { st.row.rubric = fresh.rubric; renderSelf(); }
 }
 async function submitSelf(on){
   const r = evalState.row;
   await flushEval();
   if (on) {
-    if (!r.ce_id) { toast("Pick your CE in Evaluating CE first.", 5000); $('[data-bind="ce_id"]')?.focus(); return; }
-    const p = evalProblems(r).filter(x => !/need specific examples/.test(x));
+    if (!r.ce_id) { toast("Pick your CE first.", 5000); ($('[data-sf="ce_id"]') || $('[data-bind="ce_id"]'))?.focus(); return; }
+    const qs = questionsOf(r);
+    const p = qs ? qs.filter(q => !(r.answers?.[q.id] || "").trim() && !/optional/i.test(q.hint || "")).map(q => `No answer yet for “${q.text}”`)
+      : evalProblems(r).filter(x => !/need specific examples/.test(x));
     if (!confirm(`${p.length ? `Before you submit:\n\n• ${p.join("\n• ")}\n\n` : ""}Submit your self-eval to ${personName(r.ce_id)}?\n\nThey're emailed, and see your answers once they've finished their own eval. You can take it back until they start theirs.`)) return;
   }
   try {
@@ -1399,6 +1485,72 @@ async function submitSelf(on){
     await reloadEval();
     toast(on ? `Submitted to ${personName(r.ce_id)}.` : "Taken back. It's a draft again.");
   } catch (e) { fail(on ? "Couldn't submit it" : "Couldn't take it back", e); }
+}
+
+/* =========================================================
+   QUESTIONS (CEs): what members answer in their self-eval
+   ========================================================= */
+let qsets = [];        // every CE's saved list: {owner_id, questions, updated_at}
+let defaultQs = [];    // used by a CE who hasn't saved their own
+let qDraft = null, qDirty = false;
+async function loadQuestions(){
+  if (!can("evals.write")) { qsets = []; return; }
+  const [s, d] = await Promise.all([rows(sb.from("eval_questions").select("*")), call("eval_default_questions", {})]);
+  qsets = s; defaultQs = d || [];
+}
+const myQs = () => { const r = qsets.find(q => q.owner_id === me.id); return r && r.questions?.length ? r : null; };
+function renderQuestions(){
+  const m = $("#main"), mine = myQs();
+  if (!qDraft) { qDraft = clone(mine ? mine.questions : defaultQs); qDirty = false; }
+  const meta = `<div class="meta">${qDirty ? "<b>Unsaved changes.</b> " : ""}${mine ? `Saved ${fmtDate(mine.updated_at)}.` : "You're using the default questions until you save your own."}
+    Members who pick you as their CE answer these in their self-eval.</div>`;
+  const acts = `${qDirty ? `<button class="btn" data-act="qDiscard">Discard changes</button>` : ""}<button class="btn primary" data-act="qSave"${qDirty ? "" : " disabled"}>Save questions</button>`;
+  let h = toolbarHTML("Your self-eval questions", meta, acts, "var(--orange)");
+  h += `<div class="banner note"><span class="bt">A draft self-eval always shows your latest questions. Once a member submits, theirs keeps the questions they answered, so changing yours later doesn't affect it.</span></div>`;
+  h += `<div class="qe">${qDraft.map((q, i) => `<div class="qrow"><div class="qi">${i + 1}.</div><div>
+      <textarea class="fi" data-qtext="${i}" rows="2" maxlength="500" placeholder="The question" aria-label="Question ${i + 1}">${esc(q.text)}</textarea>
+      <input class="fi" data-qhint="${i}" value="${esc(q.hint || "")}" maxlength="200" placeholder="Hint under it (optional), e.g. “Optional” or “A sentence or two”" aria-label="Hint for question ${i + 1}"></div>
+      <div class="qb"><button class="btn" data-act="qMove" data-i="${i}" data-d="-1" title="Move up"${i ? "" : " disabled"}>↑</button>
+        <button class="btn" data-act="qMove" data-i="${i}" data-d="1" title="Move down"${i < qDraft.length - 1 ? "" : " disabled"}>↓</button>
+        <button class="btn danger" data-act="qDel" data-i="${i}" title="Remove"${qDraft.length > 1 ? "" : " disabled"}>✕</button></div></div>`).join("")}
+    <button class="btn" data-act="qNew"${qDraft.length >= 20 ? " disabled" : ""}>+ Add a question</button></div>`;
+  const sets = [{key:"default", name:"Default questions", qs:defaultQs},
+    ...qsets.filter(s => s.owner_id !== me.id && s.questions?.length).map(s => ({key:s.owner_id, name:personName(s.owner_id) || "A former CE", qs:s.questions}))];
+  h += `<h3 class="sec">Use other CEs' questions</h3><div class="meta" style="color:var(--muted);font-size:13px">Add any of them to yours, or start from a whole list. Their lists aren't changed.</div>
+    <div class="qsets">${sets.map(s => `<div class="qset"><div class="qsh"><b>${esc(s.name)}</b><button class="btn" data-act="qUseAll" data-set="${esc(s.key)}">Use this list</button></div>
+      <ol>${s.qs.map((q, i) => `<li>${esc(q.text)}<button class="link" data-act="qPick" data-set="${esc(s.key)}" data-i="${i}" title="Add to your questions">+ Add</button></li>`).join("")}</ol></div>`).join("")}</div>`;
+  m.innerHTML = h;
+}
+const qSet = key => key === "default" ? defaultQs : (qsets.find(s => s.owner_id === key)?.questions || []);
+function qChanged(rerender = true){
+  qDirty = true;
+  if (rerender) { const y = window.scrollY; renderQuestions(); window.scrollTo({top:y}); return; }
+  const b = $('[data-act="qSave"]'); if (b) b.disabled = false;
+}
+function qAct(act, d){
+  const i = +d.i;
+  if (act === "qNew") { qDraft.push({id:uid(), text:"", hint:""}); qChanged(); $$("[data-qtext]").at(-1)?.focus(); return; }
+  if (act === "qMove") { const j = i + +d.d; if (j < 0 || j >= qDraft.length) return; [qDraft[i], qDraft[j]] = [qDraft[j], qDraft[i]]; }
+  if (act === "qDel") { if ((qDraft[i].text || "").trim() && !confirm(`Remove “${qDraft[i].text}”?`)) return; qDraft.splice(i, 1); }
+  if (act === "qPick") {
+    if (qDraft.length >= 20) { toast("You can have up to 20 questions."); return; }
+    const q = clone(qSet(d.set)[i]); if (qDraft.some(x => x.id === q.id)) q.id = uid();
+    qDraft.push(q); toast("Added to the end of your questions.");
+  }
+  if (act === "qUseAll") {
+    if (!confirm("Replace your questions with this list? You can still change them before saving.")) return;
+    qDraft = clone(qSet(d.set));
+  }
+  qChanged();
+}
+async function saveQuestions(){
+  const list = qDraft.map(q => ({id:q.id, text:(q.text || "").trim(), hint:(q.hint || "").trim()})).filter(q => q.text);
+  if (!list.length) { toast("Add at least one question."); return; }
+  try {
+    await call("eval_questions_save", {p:list});
+    await loadQuestions(); qDraft = null; qDirty = false; renderQuestions();
+    toast("Saved. Members who pick you as their CE will answer these.");
+  } catch (e) { fail("Couldn't save your questions", e); }
 }
 
 /* ---------- the eval meeting ---------- */
@@ -1439,6 +1591,14 @@ function onEvalInput(ev){
   }
   else if (t.dataset.field != null) { r.fields = {...r.fields, [t.dataset.field]:t.value}; $$(`[data-field="${CSS.escape(t.dataset.field)}"]`).forEach(o => { if (o !== t) o.value = t.value; }); }
   else if (t.dataset.box) r.answers = {...r.answers, [t.dataset.box]:t.value};
+  else if (t.dataset.qa) r.answers = {...r.answers, [t.dataset.qa]:t.value};
+  else if (t.dataset.sf) {
+    r[t.dataset.sf] = t.value;
+    if (t.dataset.sf === "ce_id") {
+      const b = $('[data-act="selfSubmit"]'); if (b) b.textContent = `Submit to ${personName(t.value) || "your CE"}`;
+      markDirty(); if (ev.type === "change") refreshQuestions(); return;
+    }
+  }
   else return;
   markDirty();
 }
@@ -1459,8 +1619,7 @@ async function flushEval(){
   clearTimeout(st.timer); st.dirty = false;
   const r = st.row;
   st.saving = (r.kind === "self"
-    ? call("eval_self_save", {p_id:r.id, p:{member_name:r.member_name, semester:r.semester, division:r.division, subsystem:r.subsystem,
-        ce_id:r.ce_id || "", lead_id:r.lead_id || "", review_date:r.review_date || "", fields:r.fields, ratings:r.ratings, answers:r.answers}})
+    ? call("eval_self_save", {p_id:r.id, p:{semester:r.semester, subsystem:r.subsystem, ce_id:r.ce_id || "", lead_id:r.lead_id || "", answers:r.answers}})
     : call("eval_save", {p_id:r.id, p:{member_name:r.member_name, member_email:r.member_email, semester:r.semester, division:r.division,
         subsystem:r.subsystem, lead_id:r.lead_id || "", review_date:r.review_date || "", fields:r.fields, ratings:r.ratings, answers:r.answers}}))
     .then(() => { st.err = ""; r.updated_at = new Date().toISOString(); })
@@ -1474,7 +1633,7 @@ function showSaveState(){
   el.className = "savest" + (st.err ? " bad" : "");
   el.textContent = !evalLive() ? "" : st.err ? `· Not saved: ${st.err} (retrying)` : st.saving || st.dirty ? "· Saving…" : "· All changes saved";
 }
-window.addEventListener("beforeunload", e => { if (evalState && (evalState.dirty || evalState.saving)) { flushEval(); e.preventDefault(); e.returnValue = ""; } });
+window.addEventListener("beforeunload", e => { if (qDirty) { e.preventDefault(); e.returnValue = ""; return; } if (evalState && (evalState.dirty || evalState.saving)) { flushEval(); e.preventDefault(); e.returnValue = ""; } });
 
 let mcT;
 function memberCommentSoon(text){
@@ -1585,6 +1744,9 @@ document.addEventListener("click", e => {
     case "selfSubmit": submitSelf(true); break;
     case "selfBack": if (confirm("Take your self-eval back? It becomes a draft only you can see, until you submit it again.")) submitSelf(false); break;
     case "evMeet": openMeeting(); break;
+    case "qNew": case "qMove": case "qDel": case "qPick": case "qUseAll": qAct(act, d); break;
+    case "qSave": saveQuestions(); break;
+    case "qDiscard": if (confirm("Throw away your unsaved changes to the questions?")) { qDraft = null; renderQuestions(); } break;
     case "evPrint": printEval(); break;
   }
 });
